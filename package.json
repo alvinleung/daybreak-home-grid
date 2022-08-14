@@ -1,0 +1,22 @@
+{
+  "name": "daybreak-home-grid",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "start": "parcel src/index.html",
+    "build": "parcel build src/index.html & parcel build src/app.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alvinleung/daybreak-home-grid.git"
+  },
+  "author": "Alvin Leung",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/alvinleung/daybreak-home-grid/issues"
+  },
+  "homepage": "https://github.com/alvinleung/daybreak-home-grid#readme",
+  "dependencies": {
+    "parcel": "^2.7.0"
+  }
+}
