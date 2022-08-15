@@ -143,8 +143,75 @@ const allProjectsData: ProjectData[] = [
   }
 ]
 
+function readProjectDataFromHTML() {
+  const baseElm = document.querySelector(".all-daybreak-projects") as HTMLDivElement;
+  const allProjects = baseElm.querySelectorAll(".daybreak-project");
+  const projectData = Array.from(allProjects).map((projectElm) => {
+    const importanceElm = projectElm.querySelector(".daybreak-project-importance") as HTMLDivElement;
+    const nameElm = projectElm.querySelector(".daybreak-project-name") as HTMLDivElement;
+    const descriptionElm = projectElm.querySelector(".daybreak-project-description") as HTMLDivElement;
+    const yearElm = projectElm.querySelector(".daybreak-project-year") as HTMLDivElement;
+    const expertiseElm = projectElm.querySelector(".daybreak-project-expertise") as HTMLDivElement;
+    const coverElm = projectElm.querySelector(".daybreak-project-cover") as HTMLDivElement;
+
+    const importance = parseInt(importanceElm.innerHTML);
+    const name = nameElm.innerHTML;
+    const description = descriptionElm.innerHTML;
+    const year = yearElm.innerHTML;
+    const expertise = Array.from(expertiseElm.children).map((elm) => elm.innerHTML);
+    const cover = Array.from(coverElm.children).map((elm) => (elm as HTMLImageElement).src);
+
+    return {
+      importance, name, description, year, expertise, cover,
+    }
+  })
+
+  return projectData;
+}
+
+const projectDataFromHTML = readProjectDataFromHTML();
+
+// function createProjectDOM(project: ProjectData) {
+//   const container = document.createElement("div");
+//   container.classList.add("daybreak-project");
+
+//   const name = document.createElement("div");
+//   name.innerHTML = project.name;
+//   name.classList.add("daybreak-project-name");
+
+//   const description = document.createElement("div");
+//   description.innerHTML = project.description;
+//   description.classList.add("daybreak-project-description");
+
+//   const year = document.createElement("div");
+//   year.innerHTML = project.year;
+//   year.classList.add("daybreak-project-year");
+
+//   const expertise = document.createElement("div");
+//   expertise.innerHTML = project.expertise.reduce((prev, curr) => prev + `<div>${curr}</div>`, "")
+//   expertise.classList.add("daybreak-project-expertise");
+
+//   const cover = document.createElement("div");
+//   cover.innerHTML = project.cover.reduce((prev, curr) => prev + `<img src="${curr}"/>`, "")
+//   cover.classList.add("daybreak-project-cover");
+
+//   container.appendChild(name);
+//   container.appendChild(description);
+//   container.appendChild(year);
+//   container.appendChild(expertise);
+//   container.appendChild(cover);
+
+//   return container;
+// }
+
+// const projectDom = allProjectsData.map((project) => createProjectDOM(project));
+// projectDom.forEach((elm) => {
+//   document.body.appendChild(elm);
+// })
+
+
 // data with multiple images
-const cellData = allProjectsData.reduce((arr, currProject) => {
+const cellData = projectDataFromHTML.reduce((arr, currProject) => {
   currProject.cover.forEach((coverImageUrl) => {
     arr.push({
       ...currProject, cover: coverImageUrl

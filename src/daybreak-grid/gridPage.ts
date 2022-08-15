@@ -53,13 +53,13 @@ const getCellInfo = (template: GridTemplate, cellElmsList: HTMLDivElement[], col
   }
 }
 
-const createGridContainer = () => {
+const createGridContainer = (colCount: number) => {
   const gridContainer = document.createElement("div");
   stylesheet(gridContainer, {
     // position: "absolute",
     // top: positionY + "px",
     display: "grid",
-    gridTemplateColumns: "repeat(8, 1fr)",
+    gridTemplateColumns: `repeat(${colCount}, 1fr)`,
     width: "100%",
   })
 
@@ -83,7 +83,7 @@ interface GridPageConfig {
 }
 
 export const createPage = ({ template, renderFunction, insertBefore, baseElm }: GridPageConfig): GridPage => {
-  const gridContainer = createGridContainer();
+  const gridContainer = createGridContainer(template.cols);
   const cellElmsList = createGridCells(template, gridContainer);
   const cellCleanups: GridCellCleanup[] = [];
 

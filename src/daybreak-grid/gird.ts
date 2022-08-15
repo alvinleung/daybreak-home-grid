@@ -110,23 +110,6 @@ export const createInfiniteGrid = ({ renderCell, templates, baseElm }: InfiniteG
     });
   }, [scrollPosition, viewportHeight])
 
-
-  let called = false;
-  allPages.onChange(() => {
-    if (called) return;
-    called = true;
-
-    // const firstPageHeight = allPages.value[0].height.value;
-    // scrollPosition.set(firstPageHeight);
-    // scrollMotion.setValue(firstPageHeight, () => {
-    //   stylesheet(gridScrollContent, {
-    //     y: -scroll
-    //   })
-    // }, false)
-    // window.scrollTo(0, firstPageHeight);
-  })
-
-
   const handlePageResize = () => {
     viewportHeight.set(window.innerHeight);
 
