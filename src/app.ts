@@ -158,7 +158,7 @@ function readProjectDataFromHTML() {
     const name = nameElm.innerHTML;
     const description = descriptionElm.innerHTML;
     const year = yearElm.innerHTML;
-    const expertise = Array.from(expertiseElm.children).map((elm) => elm.innerHTML);
+    const expertise = expertiseElm.innerHTML.split(",").map((str) => str.trim());
     const cover = Array.from(coverElm.children).map((elm) => (elm as HTMLImageElement).src);
 
     return {
