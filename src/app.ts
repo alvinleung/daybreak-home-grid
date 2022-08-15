@@ -209,52 +209,62 @@ function readProjectDataFromHTML() {
 //   document.body.appendChild(elm);
 // })
 
+//@ts-ignore
+window.daybreak = window.daybreak || {};
 
+const exports = {
+  createInfiniteGrid,
+  createGridTemplate,
+  shuffleGridData,
+}
 
-window.addEventListener("load", () => {
-  const projectDataFromHTML = readProjectDataFromHTML();
+//@ts-ignore
+window.daybreak = { ...window.daybreak, exports: exports }
 
-  // data with multiple images
-  const cellData = projectDataFromHTML.reduce((arr, currProject) => {
-    currProject.cover.forEach((coverImageUrl) => {
-      arr.push({
-        ...currProject, cover: coverImageUrl
-      })
-    })
+// window.addEventListener("load", () => {
+//   const projectDataFromHTML = readProjectDataFromHTML();
 
-    return arr;
-  }, [] as ProjectCellData[])
+//   // data with multiple images
+//   const cellData = projectDataFromHTML.reduce((arr, currProject) => {
+//     currProject.cover.forEach((coverImageUrl) => {
+//       arr.push({
+//         ...currProject, cover: coverImageUrl
+//       })
+//     })
 
-  const cellDataShuffled = shuffleGridData(cellData.reduce((arr, curr) => {
-    arr.push({ importance: curr.importance, data: curr });
-    return arr
-  }, [] as ShuffeableData<ProjectCellData>[]));
+//     return arr;
+//   }, [] as ProjectCellData[])
 
-  const cleanupInfiniteGrid = createInfiniteGrid({
-    cols: 8,
-    templates: gridTemplates,
-    baseElm: document.querySelector(".daybreak-grid") as HTMLDivElement,
-    renderCell: (cellInfo) => {
+//   const cellDataShuffled = shuffleGridData(cellData.reduce((arr, curr) => {
+//     arr.push({ importance: curr.importance, data: curr });
+//     return arr
+//   }, [] as ShuffeableData<ProjectCellData>[]));
 
-      cellInfo.elm.style.height = "100px";
+//   const cleanupInfiniteGrid = createInfiniteGrid({
+//     cols: 8,
+//     templates: gridTemplates,
+//     baseElm: document.querySelector(".daybreak-grid") as HTMLDivElement,
+//     renderCell: (cellInfo) => {
 
-      // for empty cells
-      if (cellInfo.type === CELL_EMPTY) {
-        cellInfo.elm.innerHTML = "empty";
-        cellInfo.elm.style.opacity = ".2";
-        return;
-      }
+//       cellInfo.elm.style.height = "100px";
 
-      const celldata = cellDataShuffled.next();
-      cellInfo.elm.innerHTML = celldata.name;
-      cellInfo.onUpdate(() => {
-        console.log("update")
-      })
+//       // for empty cells
+//       if (cellInfo.type === CELL_EMPTY) {
+//         cellInfo.elm.innerHTML = "empty";
+//         cellInfo.elm.style.opacity = ".2";
+//         return;
+//       }
 
-      // cleanup
-      return () => {
+//       const celldata = cellDataShuffled.next();
+//       cellInfo.elm.innerHTML = celldata.name;
+//       cellInfo.onUpdate(() => {
+//         console.log("update")
+//       })
 
-      }
-    }
-  });
-})
+//       // cleanup
+//       return () => {
+
+//       }
+//     }
+//   });
+// })
