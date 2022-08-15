@@ -63,6 +63,7 @@ const createGridContainer = (colCount: number) => {
     gap: "24px",
     rowGap: "24px",
     width: "100%",
+    marginBottom: "24px"
   })
 
   return gridContainer;
