@@ -16,6 +16,8 @@ interface InfiniteGridConfig {
 }
 
 
+
+
 export const createInfiniteGrid = ({ renderCell, templates, baseElm }: InfiniteGridConfig) => {
 
   const scrollPosition = state(0);
@@ -23,43 +25,176 @@ export const createInfiniteGrid = ({ renderCell, templates, baseElm }: InfiniteG
   const allPages = state([] as GridPage[]);
   // const mainPage = createPage(selectedTemplate, renderCell, baseElm);
 
+  const gridScrollContent = document.createElement("div");
+  stylesheet(gridScrollContent, {
+    position: "relative"
+  })
+  const negativeScrollContainer = document.createElement("div");
+  const positiveScrollContainer = document.createElement("div");
+
+  stylesheet(negativeScrollContainer, {
+    position: "absolute",
+    bottom: "100%",
+    left: "0px",
+    right: "0px",
+    display: "flex",
+    flexDirection: "col-reverse",
+    flexWrap: "wrap"
+  })
+
+
+  gridScrollContent.appendChild(negativeScrollContainer);
+  gridScrollContent.appendChild(positiveScrollContainer);
+  baseElm.appendChild(gridScrollContent);
+
+  const scrollMotion = createSmoothMotion({ initial: 0, smoothFactor: 0.05 });
+
   createStateRenderer(() => {
-    const attemptCreateNewPage = () => {
-      const PADDING = window.innerHeight;
-      const totalHeight = allPages.value.reduce((prev, curr) => prev + curr.height.value, 0);
+    scrollMotion.setValue(scrollPosition.value, (scroll) => {
 
-      const shouldInsertNewPageAfter = totalHeight < viewportHeight.value + scrollPosition.value + PADDING;
-      const shouldInsertNewPageBefore = totalHeight < viewportHeight.value + scrollPosition.value + PADDING;
+      stylesheet(gridScrollContent, {
+        y: -scroll
+      })
 
-      if (shouldInsertNewPageAfter) {
+      const attemptCreateNewPage = () => {
+        const APPEND_THRESHOLD = window.innerHeight / 2;
+
+        // count height
+        const { positiveHeight, negativeHeight } = allPages.value.reduce((prev, curr) => {
+          if (curr.isInsertBefore) {
+            prev.negativeHeight += curr.height.value
+            return prev;
+          }
+          prev.positiveHeight += curr.height.value;
+          return prev;
+        }, { positiveHeight: 0, negativeHeight: 0 });
+
+        const shouldInsertNewPageAfter = positiveHeight < viewportHeight.value + scroll + APPEND_THRESHOLD;
+        const shouldInsertNewPageBefore = scroll + negativeHeight < 0;
+
         const selectedTemplate = getRandomArrayItem(templates);
-        const newPage = createPage(selectedTemplate, renderCell, baseElm);
 
-        allPages.set([
-          ...allPages.value,
-          newPage
-        ])
-        attemptCreateNewPage();
-        return;
+
+        if (shouldInsertNewPageBefore) {
+          const newPage = createPage({
+            template: selectedTemplate,
+            renderFunction: renderCell,
+            insertBefore: true,
+            baseElm: negativeScrollContainer,
+          });
+
+          allPages.set([
+            ...allPages.value,
+            newPage
+          ])
+          return;
+        }
+
+        if (shouldInsertNewPageAfter) {
+          const newPage = createPage({
+            template: selectedTemplate,
+            renderFunction: renderCell,
+            insertBefore: false,
+            baseElm: positiveScrollContainer,
+          });
+
+          allPages.set([
+            ...allPages.value,
+            newPage
+          ])
+          attemptCreateNewPage();
+          return;
+        }
       }
-    }
-    attemptCreateNewPage();
+      attemptCreateNewPage();
+    });
   }, [scrollPosition, viewportHeight])
+
+
+  let called = false;
+  allPages.onChange(() => {
+    if (called) return;
+    called = true;
+
+    // const firstPageHeight = allPages.value[0].height.value;
+    // scrollPosition.set(firstPageHeight);
+    // scrollMotion.setValue(firstPageHeight, () => {
+    //   stylesheet(gridScrollContent, {
+    //     y: -scroll
+    //   })
+    // }, false)
+    // window.scrollTo(0, firstPageHeight);
+  })
 
 
   const handlePageResize = () => {
     viewportHeight.set(window.innerHeight);
+
+    stylesheet(baseElm, {
+      overflow: "hidden",
+      height: "100vh"
+    })
   }
-  const handlePageScroll = () => {
-    scrollPosition.set(window.scrollY);
+  handlePageResize();
+
+
+  const handlePageScroll = (e: WheelEvent) => {
+    scrollPosition.set(scrollPosition.value + e.deltaY);
   }
   window.addEventListener("resize", handlePageResize);
-  window.addEventListener("scroll", handlePageScroll);
+  window.addEventListener("wheel", handlePageScroll);
 
   const cleanupInfiniteGrid = () => {
     window.removeEventListener("resize", handlePageResize);
-    window.removeEventListener("scroll", handlePageScroll);
+    window.removeEventListener("wheel", handlePageScroll);
   }
 
   return cleanupInfiniteGrid;
+}
+
+
+
+
+function createSmoothMotion({ initial = 0, smoothFactor = 0.05 }) {
+  let currentAnimationFrame = 0;
+  let currentScroll = initial;
+  let targetScroll = initial;
+  let velocity = 0;
+
+  function jumpTo(target: number) {
+    targetScroll = target + currentScroll;
+    currentScroll = target;
+  }
+
+  function updateScrollMotion(
+    target: number,
+    updateFunction: (newValue: number) => void,
+    smooth: boolean = true
+  ) {
+    targetScroll = target;
+
+    if (!smooth) {
+      currentScroll = targetScroll;
+      updateFunction(currentScroll);
+      return;
+    }
+
+    function updateFrame() {
+      // interpolate here
+      velocity = (targetScroll - currentScroll) * smoothFactor;
+      currentScroll += velocity;
+
+      updateFunction(currentScroll);
+
+      const velocityAbs = Math.abs(velocity);
+      const isDone = velocityAbs < 0.1;
+
+      if (!isDone) requestAnimationFrame(updateFrame);
+    }
+
+    if (currentAnimationFrame) cancelAnimationFrame(currentAnimationFrame);
+    currentAnimationFrame = requestAnimationFrame(updateFrame);
+  }
+
+  return { setValue: updateScrollMotion, jumpTo: jumpTo };
 }

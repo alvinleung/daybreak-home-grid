@@ -54,17 +54,6 @@ const gridTemplates = [
     [X, _, _, _, X, _, _, X],
     [X, _, X, _, _, X, _, _],
   ]),
-  createGridTemplate([
-    [X, _, _, X, X, _, _, X],
-    [_, _, X, _, _, _, X, _],
-    [_, _, _, _, _, _, _, _],
-    [_, _, _, _, _, _, _, _],
-    [_, _, _, _, _, _, _, _],
-    [_, _, _, _, _, _, _, _],
-    [_, _, _, _, _, _, _, _],
-    [_, _, _, _, _, _, _, _],
-    [_, _, _, _, _, _, _, _],
-  ])
 ]
 
 const allProjectsData: ProjectData[] = [
@@ -177,10 +166,15 @@ window.addEventListener("load", () => {
   const cleanupInfiniteGrid = createInfiniteGrid({
     cols: 8,
     templates: gridTemplates,
-    baseElm: document.body,
+    baseElm: document.querySelector(".daybreak-grid") as HTMLDivElement,
     renderCell: (cellInfo) => {
+
+      cellInfo.elm.style.height = "100px";
+
       // for empty cells
       if (cellInfo.type === CELL_EMPTY) {
+        cellInfo.elm.innerHTML = "empty";
+        cellInfo.elm.style.opacity = ".2";
         return;
       }
 

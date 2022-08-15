@@ -56,9 +56,11 @@ const getCellInfo = (template: GridTemplate, cellElmsList: HTMLDivElement[], col
 const createGridContainer = () => {
   const gridContainer = document.createElement("div");
   stylesheet(gridContainer, {
+    // position: "absolute",
+    // top: positionY + "px",
     display: "grid",
     gridTemplateColumns: "repeat(8, 1fr)",
-    width: "100%"
+    width: "100%",
   })
 
   return gridContainer;
@@ -69,9 +71,18 @@ export interface GridPage {
   pageElm: HTMLDivElement;
   height: State<number>;
   cleanupPage: Function;
+  isInsertBefore: boolean;
 }
 
-export const createPage = (template: GridTemplate, renderFunction: GridCellRenderer, baseElm: HTMLElement): GridPage => {
+interface GridPageConfig {
+  template: GridTemplate;
+  renderFunction: GridCellRenderer;
+  baseElm: HTMLElement;
+  insertBefore: boolean;
+  // positionY: number;
+}
+
+export const createPage = ({ template, renderFunction, insertBefore, baseElm }: GridPageConfig): GridPage => {
   const gridContainer = createGridContainer();
   const cellElmsList = createGridCells(template, gridContainer);
   const cellCleanups: GridCellCleanup[] = [];
@@ -106,6 +117,7 @@ export const createPage = (template: GridTemplate, renderFunction: GridCellRende
   return {
     pageElm: gridContainer,
     height: pageHeight,
+    isInsertBefore: insertBefore,
     cleanupPage: () => {
       cellCleanups.forEach((cleanup) => cleanup())
       cellElmsList.forEach((node) => gridContainer.removeChild(node))
