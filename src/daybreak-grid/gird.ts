@@ -140,7 +140,15 @@ export const createInfiniteGrid = ({ renderCell, templates, baseElm }: InfiniteG
     allPages.unobserveChange(handlePageCreate)
   }
 
-  return { cleanupInfiniteGrid, observePageCreation, unobservePageCreation };
+  const isInViewport = (elm: HTMLElement) => {
+    const bounds = elm.getBoundingClientRect();
+    return (
+      bounds.top >= 0 &&
+      bounds.bottom <= (viewportHeight.value)
+    );
+  }
+
+  return { cleanupInfiniteGrid, observePageCreation, unobservePageCreation, isInViewport };
 }
 
 
