@@ -23,6 +23,15 @@ export const createInfiniteGrid = ({ renderCell, templates, baseElm }: InfiniteG
   const scrollPosition = state(0);
   const viewportHeight = state(window.innerHeight);
   const allPages = state([] as GridPage[]);
+  const canScroll = state(true);
+
+  const disableScroll = () => {
+    canScroll.set(false);
+  }
+
+  const enableScroll = () => {
+    canScroll.set(true);
+  }
   // const mainPage = createPage(selectedTemplate, renderCell, baseElm);
 
   const gridScrollContent = document.createElement("div");
@@ -122,6 +131,7 @@ export const createInfiniteGrid = ({ renderCell, templates, baseElm }: InfiniteG
 
 
   const handlePageScroll = (e: WheelEvent) => {
+    if (!canScroll.value) return;
     scrollPosition.set(scrollPosition.value + e.deltaY);
   }
   window.addEventListener("resize", handlePageResize);
@@ -148,7 +158,7 @@ export const createInfiniteGrid = ({ renderCell, templates, baseElm }: InfiniteG
     );
   }
 
-  return { cleanupInfiniteGrid, observePageCreation, unobservePageCreation, isInViewport };
+  return { cleanupInfiniteGrid, observePageCreation, unobservePageCreation, isInViewport, enableScroll, disableScroll };
 }
 
 
