@@ -169,7 +169,7 @@ function readProjectDataFromHTML() {
   return projectData;
 }
 
-const projectDataFromHTML = readProjectDataFromHTML();
+
 
 // function createProjectDOM(project: ProjectData) {
 //   const container = document.createElement("div");
@@ -210,25 +210,25 @@ const projectDataFromHTML = readProjectDataFromHTML();
 // })
 
 
-// data with multiple images
-const cellData = projectDataFromHTML.reduce((arr, currProject) => {
-  currProject.cover.forEach((coverImageUrl) => {
-    arr.push({
-      ...currProject, cover: coverImageUrl
-    })
-  })
-
-  return arr;
-}, [] as ProjectCellData[])
-
-const cellDataShuffled = shuffleGridData(cellData.reduce((arr, curr) => {
-  arr.push({ importance: curr.importance, data: curr });
-  return arr
-}, [] as ShuffeableData<ProjectCellData>[]));
-
-
 
 window.addEventListener("load", () => {
+  const projectDataFromHTML = readProjectDataFromHTML();
+
+  // data with multiple images
+  const cellData = projectDataFromHTML.reduce((arr, currProject) => {
+    currProject.cover.forEach((coverImageUrl) => {
+      arr.push({
+        ...currProject, cover: coverImageUrl
+      })
+    })
+
+    return arr;
+  }, [] as ProjectCellData[])
+
+  const cellDataShuffled = shuffleGridData(cellData.reduce((arr, curr) => {
+    arr.push({ importance: curr.importance, data: curr });
+    return arr
+  }, [] as ShuffeableData<ProjectCellData>[]));
 
   const cleanupInfiniteGrid = createInfiniteGrid({
     cols: 8,
