@@ -60,6 +60,8 @@ const createGridContainer = (colCount: number) => {
     // top: positionY + "px",
     display: "grid",
     gridTemplateColumns: `repeat(${colCount}, 1fr)`,
+    gap: "24px",
+    rowGap: "24px",
     width: "100%",
   })
 
