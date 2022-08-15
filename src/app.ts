@@ -219,7 +219,7 @@ const exports = {
 }
 
 //@ts-ignore
-window.daybreak = { ...window.daybreak, exports: exports }
+window.daybreak = { ...window.daybreak, grid: exports }
 
 // window.addEventListener("load", () => {
 //   const projectDataFromHTML = readProjectDataFromHTML();
