@@ -132,7 +132,15 @@ export const createInfiniteGrid = ({ renderCell, templates, baseElm }: InfiniteG
     window.removeEventListener("wheel", handlePageScroll);
   }
 
-  return cleanupInfiniteGrid;
+  const observePageCreation = (handlePageCreate) => {
+    allPages.onChange(handlePageCreate)
+  }
+
+  const unobservePageCreation = (handlePageCreate) => {
+    allPages.unobserveChange(handlePageCreate)
+  }
+
+  return { cleanupInfiniteGrid, observePageCreation, unobservePageCreation };
 }
 
 
