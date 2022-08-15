@@ -143,8 +143,8 @@ export const createInfiniteGrid = ({ renderCell, templates, baseElm }: InfiniteG
   const isInViewport = (elm: HTMLElement) => {
     const bounds = elm.getBoundingClientRect();
     return (
-      bounds.top >= 0 &&
-      bounds.bottom <= (viewportHeight.value)
+      bounds.bottom >= 0 &&
+      bounds.top <= (viewportHeight.value)
     );
   }
 
