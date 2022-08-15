@@ -53,6 +53,17 @@ const gridTemplates = [
     [_, X, _, X, _, _, X, _],
     [X, _, _, _, X, _, _, X],
     [X, _, X, _, _, X, _, _],
+  ]),
+  createGridTemplate([
+    [X, _, _, X, X, _, _, X],
+    [_, _, X, _, _, _, X, _],
+    [_, _, _, _, _, _, _, _],
+    [_, _, _, _, _, _, _, _],
+    [_, _, _, _, _, _, _, _],
+    [_, _, _, _, _, _, _, _],
+    [_, _, _, _, _, _, _, _],
+    [_, _, _, _, _, _, _, _],
+    [_, _, _, _, _, _, _, _],
   ])
 ]
 
@@ -163,13 +174,15 @@ const cellDataShuffled = shuffleGridData(cellData.reduce((arr, curr) => {
 
 window.addEventListener("load", () => {
 
-  const { cleanupInfiniteGrid } = createInfiniteGrid({
+  const cleanupInfiniteGrid = createInfiniteGrid({
     cols: 8,
     templates: gridTemplates,
     baseElm: document.body,
     renderCell: (cellInfo) => {
       // for empty cells
-      if (cellInfo.type === CELL_EMPTY) return () => { }
+      if (cellInfo.type === CELL_EMPTY) {
+        return;
+      }
 
       const celldata = cellDataShuffled.next();
       cellInfo.elm.innerHTML = celldata.name;

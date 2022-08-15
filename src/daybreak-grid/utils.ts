@@ -60,12 +60,15 @@ export function createStateRenderer(
     hasUnrenderedState = true;
     requestAnimationFrame(attemptRender);
   }
+
+  // initial render
+  triggerRender();
 }
 
 export function createObserver(): [
   (callback: Function) => void,
   (callback: Function) => void,
-  () => void
+  <T>(payload: T) => void
 ] {
   const callbacks: Function[] = [];
   const observe = (callback: Function) => {
@@ -76,8 +79,8 @@ export function createObserver(): [
 
     removeIndex !== -1 && callbacks.splice(removeIndex, 1);
   };
-  function fire() {
-    callbacks.forEach((callback) => callback());
+  function fire<T>(payload: T) {
+    callbacks.forEach((callback) => callback(payload));
   }
   return [observe, unobserve, fire];
 }
