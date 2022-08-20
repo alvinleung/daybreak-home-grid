@@ -150,7 +150,7 @@ export const createInfiniteGrid = ({ renderCell, templates, baseElm }: InfiniteG
     baseElm.style.overflow = "scroll";
 
     const handleScroll = (e: Event) => {
-      scrollPosition.set(baseElm.scrollTop);
+      // scrollPosition.set(baseElm.scrollTop);
     }
     baseElm.addEventListener("scroll", handleScroll);
   }
