@@ -24,6 +24,7 @@ export const createInfiniteGrid = ({ renderCell, templates, baseElm }: InfiniteG
   const viewportHeight = state(window.innerHeight);
   const allPages = state([] as GridPage[]);
   const canScroll = state(true);
+  const useTouchInput = state(true);
 
   const disableScroll = () => {
     canScroll.set(false);
@@ -33,6 +34,7 @@ export const createInfiniteGrid = ({ renderCell, templates, baseElm }: InfiniteG
     canScroll.set(true);
   }
   // const mainPage = createPage(selectedTemplate, renderCell, baseElm);
+
 
   const gridScrollContent = document.createElement("div");
   stylesheet(gridScrollContent, {
@@ -59,9 +61,10 @@ export const createInfiniteGrid = ({ renderCell, templates, baseElm }: InfiniteG
   const scrollMotion = createSmoothMotion({ initial: 0, smoothFactor: 0.05 });
 
   createStateRenderer(() => {
-    scrollMotion.setValue(scrollPosition.value, (scroll) => {
+    const handleScrollValueUpdate = (scroll: number) => {
 
-      stylesheet(gridScrollContent, {
+      // use y position scroll when not using touch mode
+      !useTouchInput.value && stylesheet(gridScrollContent, {
         y: -scroll
       })
 
@@ -90,6 +93,7 @@ export const createInfiniteGrid = ({ renderCell, templates, baseElm }: InfiniteG
             renderFunction: renderCell,
             insertBefore: true,
             baseElm: negativeScrollContainer,
+            useTouchInput: useTouchInput
           });
 
           allPages.set([
@@ -105,6 +109,7 @@ export const createInfiniteGrid = ({ renderCell, templates, baseElm }: InfiniteG
             renderFunction: renderCell,
             insertBefore: false,
             baseElm: positiveScrollContainer,
+            useTouchInput: useTouchInput
           });
 
           allPages.set([
@@ -116,8 +121,18 @@ export const createInfiniteGrid = ({ renderCell, templates, baseElm }: InfiniteG
         }
       }
       attemptCreateNewPage();
-    });
-  }, [scrollPosition, viewportHeight])
+    };
+
+
+    // switch between touch scroll mode vs wheel scroll mode
+    if (!useTouchInput.value) {
+      scrollMotion.setValue(scrollPosition.value, handleScrollValueUpdate);
+      return;
+    }
+    handleScrollValueUpdate(scrollPosition.value)
+
+  }, [scrollPosition, viewportHeight]);
+
 
   const handlePageResize = () => {
     viewportHeight.set(window.innerHeight);
@@ -128,6 +143,22 @@ export const createInfiniteGrid = ({ renderCell, templates, baseElm }: InfiniteG
     })
   }
   handlePageResize();
+
+  // TODO: working on touch scroll
+  const toggleTouchScroll = (useTouchScroll: boolean) => {
+    if (!useTouchScroll) return;
+    disableScroll();
+    scrollMotion.jumpTo(0);
+    baseElm.style.overflow = "scroll";
+
+    const handleScroll = (e: Event) => {
+      scrollPosition.set(baseElm.scrollTop);
+    }
+    baseElm.addEventListener("scroll", handleScroll);
+  }
+  // set initial touch scroll state
+  // useTouchInput.onChange(enableTouchScroll);
+  toggleTouchScroll(true);
 
 
   const handlePageScroll = (e: WheelEvent) => {

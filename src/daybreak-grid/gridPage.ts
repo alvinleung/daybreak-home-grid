@@ -82,10 +82,11 @@ interface GridPageConfig {
   renderFunction: GridCellRenderer;
   baseElm: HTMLElement;
   insertBefore: boolean;
+  useTouchInput: State<boolean>;
   // positionY: number;
 }
 
-export const createPage = ({ template, renderFunction, insertBefore, baseElm }: GridPageConfig): GridPage => {
+export const createPage = ({ template, renderFunction, insertBefore, baseElm, useTouchInput }: GridPageConfig): GridPage => {
   const gridContainer = createGridContainer(template.cols);
   const cellElmsList = createGridCells(template, gridContainer);
   const cellCleanups: GridCellCleanup[] = [];
@@ -110,6 +111,13 @@ export const createPage = ({ template, renderFunction, insertBefore, baseElm }: 
 
   baseElm.append(gridContainer);
 
+  // disable artifical scroll when using touch
+  const handleTouchInputChange = (useTouch: boolean) => {
+    if (!useTouch) return;
+    gridContainer.style.overflowY = "scroll";
+  }
+  useTouchInput.onChange(handleTouchInputChange);
+
   // measure height every time it changes
   const pageHeight = state(gridContainer.getBoundingClientRect().height);
   const handlePageResize = () => {
@@ -122,6 +130,7 @@ export const createPage = ({ template, renderFunction, insertBefore, baseElm }: 
     height: pageHeight,
     isInsertBefore: insertBefore,
     cleanupPage: () => {
+      useTouchInput.unobserveChange(handleTouchInputChange);
       cellCleanups.forEach((cleanup) => cleanup())
       cellElmsList.forEach((node) => gridContainer.removeChild(node))
       window.removeEventListener("resize", handlePageResize);

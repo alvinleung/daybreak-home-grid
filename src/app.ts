@@ -33,27 +33,38 @@ const X = CELL_PROJECT;
 
 const gridTemplates = [
   createGridTemplate([
-    [_, X, _, X, X, _, _, X],
-    [X, _, X, _, _, _, X, _],
-    [_, X, _, _, X, _, X, _],
-    [X, _, X, _, X, X, _, X],
-    [_, _, _, X, _, _, X, _],
-    [X, _, X, _, X, _, _, X],
-    [_, X, _, X, _, _, X, _],
-    [X, _, _, _, X, _, _, X],
-    [X, _, X, _, _, X, _, _],
+    [_, X, _],
+    [X, _, X],
+    [_, X, _],
+    [X, _, X],
+    [X, _, _],
+    [_, _, X],
+    [_, X, _],
+    [X, _, _],
+    [X, _, X],
   ]),
-  createGridTemplate([
-    [X, _, _, X, X, _, _, X],
-    [_, _, X, _, _, _, X, _],
-    [_, X, _, _, X, _, X, _],
-    [X, _, X, _, X, X, _, X],
-    [_, _, _, X, _, _, X, _],
-    [X, _, X, _, _, _, _, X],
-    [_, X, _, X, _, _, X, _],
-    [X, _, _, _, X, _, _, X],
-    [X, _, X, _, _, X, _, _],
-  ]),
+  // createGridTemplate([
+  //   [_, X, _, X, X, _, _, X],
+  //   [X, _, X, _, _, _, X, _],
+  //   [_, X, _, _, X, _, X, _],
+  //   [X, _, X, _, X, X, _, X],
+  //   [_, _, _, X, _, _, X, _],
+  //   [X, _, X, _, X, _, _, X],
+  //   [_, X, _, X, _, _, X, _],
+  //   [X, _, _, _, X, _, _, X],
+  //   [X, _, X, _, _, X, _, _],
+  // ]),
+  // createGridTemplate([
+  //   [X, _, _, X, X, _, _, X],
+  //   [_, _, X, _, _, _, X, _],
+  //   [_, X, _, _, X, _, X, _],
+  //   [X, _, X, _, X, X, _, X],
+  //   [_, _, _, X, _, _, X, _],
+  //   [X, _, X, _, _, _, _, X],
+  //   [_, X, _, X, _, _, X, _],
+  //   [X, _, _, _, X, _, _, X],
+  //   [X, _, X, _, _, X, _, _],
+  // ]),
 ]
 
 const allProjectsData: ProjectData[] = [
@@ -212,14 +223,14 @@ function readProjectDataFromHTML() {
 //@ts-ignore
 window.daybreak = window.daybreak || {};
 
-const exports = {
+const apiExports = {
   createInfiniteGrid,
   createGridTemplate,
   shuffleGridData,
 }
 
 //@ts-ignore
-window.daybreak = { ...window.daybreak, grid: exports }
+window.daybreak = { ...window.daybreak, grid: apiExports }
 
 // window.addEventListener("load", () => {
 //   const projectDataFromHTML = readProjectDataFromHTML();
