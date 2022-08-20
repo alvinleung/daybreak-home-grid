@@ -131,8 +131,9 @@ export const createPage = ({ template, renderFunction, insertBefore, baseElm, us
     isInsertBefore: insertBefore,
     cleanupPage: () => {
       useTouchInput.unobserveChange(handleTouchInputChange);
-      cellCleanups.forEach((cleanup) => cleanup())
-      cellElmsList.forEach((node) => gridContainer.removeChild(node))
+      cellCleanups.forEach((cleanup) => cleanup());
+      // cellElmsList.forEach((node) => gridContainer.removeChild(node));
+      gridContainer.remove();
       window.removeEventListener("resize", handlePageResize);
     }
   };
