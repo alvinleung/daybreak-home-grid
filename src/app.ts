@@ -281,7 +281,7 @@ const initTestingEnvironment = () => {
     }
   });
 
-  setTemplates(gridTemplateMobile);
+  setGridTemplates(gridTemplateMobile);
 }
 
 if (window.location.hash === "local")
