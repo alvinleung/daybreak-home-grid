@@ -30,8 +30,9 @@ export const createInfiniteGrid = ({ renderCell, templates, baseElm }: InfiniteG
   activeTemplates.onChange(() => {
     // reset the template
     allPages.value.forEach(page => {
-      page.cleanupPage()
+      page.cleanupPage();
     });
+    console.log(allPages.value);
     allPages.value = [];
   });
 
