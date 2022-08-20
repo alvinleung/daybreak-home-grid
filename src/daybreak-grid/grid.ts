@@ -60,6 +60,9 @@ export const createInfiniteGrid = ({ renderCell, templates, baseElm }: InfiniteG
     flexDirection: "col-reverse",
     flexWrap: "wrap"
   })
+  stylesheet(baseElm, {
+    height: "100vh"
+  })
 
 
   gridScrollContent.appendChild(negativeScrollContainer);
@@ -144,20 +147,24 @@ export const createInfiniteGrid = ({ renderCell, templates, baseElm }: InfiniteG
 
   const handlePageResize = () => {
     viewportHeight.set(window.innerHeight);
-
-    stylesheet(baseElm, {
-      overflow: "hidden",
-      height: "100vh"
-    })
   }
   handlePageResize();
 
   // TODO: working on touch scroll
   const toggleTouchScroll = (useTouchScroll: boolean) => {
-    if (!useTouchScroll) return;
+    if (!useTouchScroll) {
+      stylesheet(baseElm, {
+        overflowX: "hidden",
+        overflowY: "hidden",
+      })
+      return;
+    }
     disableScroll();
     scrollMotion.jumpTo(0);
-    baseElm.style.overflowY = "scroll";
+    stylesheet(baseElm, {
+      overflowX: "hidden",
+      overflowY: "scroll",
+    })
 
     const handleScroll = (e: Event) => {
       scrollPosition.set(baseElm.scrollTop);
