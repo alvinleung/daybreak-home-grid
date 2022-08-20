@@ -67,6 +67,7 @@ export const createInfiniteGrid = ({
   stylesheet(baseElm, {
     height: "100vh",
   });
+  baseElm.classList.add("hide-scrollbar");
 
   gridScrollContent.appendChild(negativeScrollContainer);
   gridScrollContent.appendChild(positiveScrollContainer);
