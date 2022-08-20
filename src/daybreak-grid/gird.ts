@@ -147,8 +147,6 @@ export const createInfiniteGrid = ({ renderCell, templates, baseElm }: InfiniteG
   // TODO: working on touch scroll
   const toggleTouchScroll = (useTouchScroll: boolean) => {
     if (!useTouchScroll) return;
-    disableScroll();
-    scrollMotion.jumpTo(0);
     baseElm.style.overflow = "scroll";
 
     const handleScroll = (e: Event) => {
