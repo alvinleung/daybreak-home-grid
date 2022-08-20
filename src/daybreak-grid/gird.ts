@@ -120,7 +120,7 @@ export const createInfiniteGrid = ({ renderCell, templates, baseElm }: InfiniteG
           return;
         }
       }
-      attemptCreateNewPage();
+      requestAnimationFrame(attemptCreateNewPage)
     };
 
 
