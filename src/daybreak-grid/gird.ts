@@ -16,7 +16,7 @@ interface InfiniteGridConfig {
 }
 
 
-
+const isTouchDevice: any = (navigator.maxTouchPoints || 'ontouchstart' in document.documentElement);
 
 export const createInfiniteGrid = ({ renderCell, templates, baseElm }: InfiniteGridConfig) => {
 
@@ -24,7 +24,7 @@ export const createInfiniteGrid = ({ renderCell, templates, baseElm }: InfiniteG
   const viewportHeight = state(window.innerHeight);
   const allPages = state([] as GridPage[]);
   const canScroll = state(true);
-  const useTouchInput = state(true);
+  const useTouchInput = state(isTouchDevice);
 
   const disableScroll = () => {
     canScroll.set(false);
@@ -157,8 +157,8 @@ export const createInfiniteGrid = ({ renderCell, templates, baseElm }: InfiniteG
     baseElm.addEventListener("scroll", handleScroll);
   }
   // set initial touch scroll state
-  // useTouchInput.onChange(enableTouchScroll);
-  toggleTouchScroll(true);
+  useTouchInput.onChange(toggleTouchScroll);
+  toggleTouchScroll(isTouchDevice);
 
 
   const handlePageScroll = (e: WheelEvent) => {
