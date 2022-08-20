@@ -1,4 +1,4 @@
-import { createInfiniteGrid } from "./daybreak-grid/gird";
+import { createInfiniteGrid } from "./daybreak-grid/grid";
 import { createGridTemplate } from "./daybreak-grid/gridTemplate";
 import { ShuffeableData, shuffleGridData } from "./daybreak-grid/shuffleGridData";
 
@@ -31,7 +31,7 @@ const CELL_PROJECT = "project";
 const _ = CELL_EMPTY;
 const X = CELL_PROJECT;
 
-const gridTemplates = [
+const gridTemplateMobile = [
   createGridTemplate([
     [_, X, _],
     [X, _, X],
@@ -42,29 +42,32 @@ const gridTemplates = [
     [_, X, _],
     [X, _, _],
     [X, _, X],
+  ])
+]
+
+const gridTemplates = [
+  createGridTemplate([
+    [_, X, _, X, X, _, _, X],
+    [X, _, X, _, _, _, X, _],
+    [_, X, _, _, X, _, X, _],
+    [X, _, X, _, X, X, _, X],
+    [_, _, _, X, _, _, X, _],
+    [X, _, X, _, X, _, _, X],
+    [_, X, _, X, _, _, X, _],
+    [X, _, _, _, X, _, _, X],
+    [X, _, X, _, _, X, _, _],
   ]),
-  // createGridTemplate([
-  //   [_, X, _, X, X, _, _, X],
-  //   [X, _, X, _, _, _, X, _],
-  //   [_, X, _, _, X, _, X, _],
-  //   [X, _, X, _, X, X, _, X],
-  //   [_, _, _, X, _, _, X, _],
-  //   [X, _, X, _, X, _, _, X],
-  //   [_, X, _, X, _, _, X, _],
-  //   [X, _, _, _, X, _, _, X],
-  //   [X, _, X, _, _, X, _, _],
-  // ]),
-  // createGridTemplate([
-  //   [X, _, _, X, X, _, _, X],
-  //   [_, _, X, _, _, _, X, _],
-  //   [_, X, _, _, X, _, X, _],
-  //   [X, _, X, _, X, X, _, X],
-  //   [_, _, _, X, _, _, X, _],
-  //   [X, _, X, _, _, _, _, X],
-  //   [_, X, _, X, _, _, X, _],
-  //   [X, _, _, _, X, _, _, X],
-  //   [X, _, X, _, _, X, _, _],
-  // ]),
+  createGridTemplate([
+    [X, _, _, X, X, _, _, X],
+    [_, _, X, _, _, _, X, _],
+    [_, X, _, _, X, _, X, _],
+    [X, _, X, _, X, X, _, X],
+    [_, _, _, X, _, _, X, _],
+    [X, _, X, _, _, _, _, X],
+    [_, X, _, X, _, _, X, _],
+    [X, _, _, _, X, _, _, X],
+    [X, _, X, _, _, X, _, _],
+  ]),
 ]
 
 const allProjectsData: ProjectData[] = [
@@ -232,50 +235,54 @@ const apiExports = {
 //@ts-ignore
 window.daybreak = { ...window.daybreak, grid: apiExports }
 
-// window.addEventListener("load", () => {
-//   const projectDataFromHTML = readProjectDataFromHTML();
+const initTestingEnvironment = () => {
+  const projectDataFromHTML = readProjectDataFromHTML();
 
-//   // data with multiple images
-//   const cellData = projectDataFromHTML.reduce((arr, currProject) => {
-//     currProject.cover.forEach((coverImageUrl) => {
-//       arr.push({
-//         ...currProject, cover: coverImageUrl
-//       })
-//     })
+  // data with multiple images
+  const cellData = projectDataFromHTML.reduce((arr, currProject) => {
+    currProject.cover.forEach((coverImageUrl) => {
+      arr.push({
+        ...currProject, cover: coverImageUrl
+      })
+    })
 
-//     return arr;
-//   }, [] as ProjectCellData[])
+    return arr;
+  }, [] as ProjectCellData[])
 
-//   const cellDataShuffled = shuffleGridData(cellData.reduce((arr, curr) => {
-//     arr.push({ importance: curr.importance, data: curr });
-//     return arr
-//   }, [] as ShuffeableData<ProjectCellData>[]));
+  const cellDataShuffled = shuffleGridData(cellData.reduce((arr, curr) => {
+    arr.push({ importance: curr.importance, data: curr });
+    return arr
+  }, [] as ShuffeableData<ProjectCellData>[]));
 
-//   const cleanupInfiniteGrid = createInfiniteGrid({
-//     cols: 8,
-//     templates: gridTemplates,
-//     baseElm: document.querySelector(".daybreak-grid") as HTMLDivElement,
-//     renderCell: (cellInfo) => {
+  const { cleanupInfiniteGrid, setGridTemplates } = createInfiniteGrid({
+    templates: gridTemplates,
+    baseElm: document.querySelector(".daybreak-grid") as HTMLDivElement,
+    renderCell: (cellInfo) => {
 
-//       cellInfo.elm.style.height = "100px";
+      cellInfo.elm.style.height = "100px";
 
-//       // for empty cells
-//       if (cellInfo.type === CELL_EMPTY) {
-//         cellInfo.elm.innerHTML = "empty";
-//         cellInfo.elm.style.opacity = ".2";
-//         return;
-//       }
+      // for empty cells
+      if (cellInfo.type === CELL_EMPTY) {
+        cellInfo.elm.innerHTML = "empty";
+        cellInfo.elm.style.opacity = ".2";
+        return;
+      }
 
-//       const celldata = cellDataShuffled.next();
-//       cellInfo.elm.innerHTML = celldata.name;
-//       cellInfo.onUpdate(() => {
-//         console.log("update")
-//       })
+      const celldata = cellDataShuffled.next();
+      cellInfo.elm.innerHTML = celldata.name;
+      cellInfo.onUpdate(() => {
+        console.log("update")
+      })
 
-//       // cleanup
-//       return () => {
+      // cleanup
+      return () => {
 
-//       }
-//     }
-//   });
-// })
+      }
+    }
+  });
+
+  setTemplates(gridTemplateMobile);
+}
+
+if (window.location.hash === "local")
+  window.addEventListener("load", initTestingEnvironment);

@@ -1,5 +1,6 @@
 import { createPage, GridCellRenderer, GridPage } from "./gridPage";
 import { GridTemplate } from "./gridTemplate"
+import { createSmoothMotion } from "./smoothMotion";
 import { createStateRenderer, State, state, stylesheet } from "./utils";
 
 const getRandomArrayItem = <T>(arr: Array<T>) => {
@@ -9,7 +10,6 @@ const getRandomArrayItem = <T>(arr: Array<T>) => {
 }
 
 interface InfiniteGridConfig {
-  cols: number;
   templates: GridTemplate[];
   renderCell: GridCellRenderer;
   baseElm: HTMLElement;
@@ -24,7 +24,17 @@ export const createInfiniteGrid = ({ renderCell, templates, baseElm }: InfiniteG
   const viewportHeight = state(window.innerHeight);
   const allPages = state([] as GridPage[]);
   const canScroll = state(true);
+  const activeTemplates = state<GridTemplate[]>(templates);
   const useTouchInput = state(isTouchDevice);
+
+  activeTemplates.onChange(() => {
+    // reset the template
+    allPages.value.forEach(page => {
+      page.cleanupPage()
+    });
+    allPages.value = [];
+  });
+
 
   const disableScroll = () => {
     canScroll.set(false);
@@ -33,8 +43,6 @@ export const createInfiniteGrid = ({ renderCell, templates, baseElm }: InfiniteG
   const enableScroll = () => {
     canScroll.set(true);
   }
-  // const mainPage = createPage(selectedTemplate, renderCell, baseElm);
-
 
   const gridScrollContent = document.createElement("div");
   stylesheet(gridScrollContent, {
@@ -84,7 +92,7 @@ export const createInfiniteGrid = ({ renderCell, templates, baseElm }: InfiniteG
         const shouldInsertNewPageAfter = positiveHeight < viewportHeight.value + scroll + APPEND_THRESHOLD;
         const shouldInsertNewPageBefore = scroll + negativeHeight < 0;
 
-        const selectedTemplate = getRandomArrayItem(templates);
+        const selectedTemplate = getRandomArrayItem(activeTemplates.value);
 
 
         if (shouldInsertNewPageBefore) {
@@ -131,7 +139,7 @@ export const createInfiniteGrid = ({ renderCell, templates, baseElm }: InfiniteG
     }
     handleScrollValueUpdate(scrollPosition.value)
 
-  }, [scrollPosition, viewportHeight]);
+  }, [scrollPosition, viewportHeight, activeTemplates]);
 
 
   const handlePageResize = () => {
@@ -149,7 +157,7 @@ export const createInfiniteGrid = ({ renderCell, templates, baseElm }: InfiniteG
     if (!useTouchScroll) return;
     disableScroll();
     scrollMotion.jumpTo(0);
-    baseElm.style.overflow = "scroll";
+    baseElm.style.overflowY = "scroll";
 
     const handleScroll = (e: Event) => {
       scrollPosition.set(baseElm.scrollTop);
@@ -189,52 +197,13 @@ export const createInfiniteGrid = ({ renderCell, templates, baseElm }: InfiniteG
     );
   }
 
-  return { cleanupInfiniteGrid, observePageCreation, unobservePageCreation, isInViewport, enableScroll, disableScroll };
-}
-
-
-
-
-function createSmoothMotion({ initial = 0, smoothFactor = 0.05 }) {
-  let currentAnimationFrame = 0;
-  let currentScroll = initial;
-  let targetScroll = initial;
-  let velocity = 0;
-
-  function jumpTo(target: number) {
-    targetScroll = target + currentScroll;
-    currentScroll = target;
-  }
-
-  function updateScrollMotion(
-    target: number,
-    updateFunction: (newValue: number) => void,
-    smooth: boolean = true
-  ) {
-    targetScroll = target;
-
-    if (!smooth) {
-      currentScroll = targetScroll;
-      updateFunction(currentScroll);
-      return;
-    }
-
-    function updateFrame() {
-      // interpolate here
-      velocity = (targetScroll - currentScroll) * smoothFactor;
-      currentScroll += velocity;
-
-      updateFunction(currentScroll);
-
-      const velocityAbs = Math.abs(velocity);
-      const isDone = velocityAbs < 0.1;
-
-      if (!isDone) requestAnimationFrame(updateFrame);
-    }
-
-    if (currentAnimationFrame) cancelAnimationFrame(currentAnimationFrame);
-    currentAnimationFrame = requestAnimationFrame(updateFrame);
-  }
-
-  return { setValue: updateScrollMotion, jumpTo: jumpTo };
+  return {
+    cleanupInfiniteGrid,
+    observePageCreation,
+    unobservePageCreation,
+    isInViewport,
+    enableScroll,
+    disableScroll,
+    setGridTemplates: activeTemplates.set
+  };
 }
