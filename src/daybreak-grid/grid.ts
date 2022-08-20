@@ -1,5 +1,5 @@
 import { createPage, GridCellRenderer, GridPage } from "./gridPage";
-import { GridTemplate } from "./gridTemplate"
+import { GridTemplate } from "./gridTemplate";
 import { createSmoothMotion } from "./smoothMotion";
 import { createStateRenderer, State, state, stylesheet } from "./utils";
 
@@ -7,7 +7,7 @@ const getRandomArrayItem = <T>(arr: Array<T>) => {
   if (arr.length == 0) throw "cannot select empty arry";
   const rand = Math.random();
   return arr[Math.round(rand) * (arr.length - 1)];
-}
+};
 
 interface InfiniteGridConfig {
   templates: GridTemplate[];
@@ -15,11 +15,14 @@ interface InfiniteGridConfig {
   baseElm: HTMLElement;
 }
 
+const isTouchDevice: any =
+  navigator.maxTouchPoints || "ontouchstart" in document.documentElement;
 
-const isTouchDevice: any = (navigator.maxTouchPoints || 'ontouchstart' in document.documentElement);
-
-export const createInfiniteGrid = ({ renderCell, templates, baseElm }: InfiniteGridConfig) => {
-
+export const createInfiniteGrid = ({
+  renderCell,
+  templates,
+  baseElm,
+}: InfiniteGridConfig) => {
   const scrollPosition = state(0);
   const viewportHeight = state(window.innerHeight);
   const allPages = state([] as GridPage[]);
@@ -28,26 +31,27 @@ export const createInfiniteGrid = ({ renderCell, templates, baseElm }: InfiniteG
   const useTouchInput = state(isTouchDevice);
 
   activeTemplates.onChange(() => {
+    if (allPages.value.length === 0) return;
+
     // reset the template
-    allPages.value.forEach(page => {
+    allPages.value.forEach((page) => {
       page.cleanupPage();
     });
     allPages.set([]);
   });
 
-
   const disableScroll = () => {
     canScroll.set(false);
-  }
+  };
 
   const enableScroll = () => {
     canScroll.set(true);
-  }
+  };
 
   const gridScrollContent = document.createElement("div");
   stylesheet(gridScrollContent, {
-    position: "relative"
-  })
+    position: "relative",
+  });
   const negativeScrollContainer = document.createElement("div");
   const positiveScrollContainer = document.createElement("div");
 
@@ -58,12 +62,11 @@ export const createInfiniteGrid = ({ renderCell, templates, baseElm }: InfiniteG
     right: "0px",
     display: "flex",
     flexDirection: "col-reverse",
-    flexWrap: "wrap"
-  })
+    flexWrap: "wrap",
+  });
   stylesheet(baseElm, {
-    height: "100vh"
-  })
-
+    height: "100vh",
+  });
 
   gridScrollContent.appendChild(negativeScrollContainer);
   gridScrollContent.appendChild(positiveScrollContainer);
@@ -73,30 +76,33 @@ export const createInfiniteGrid = ({ renderCell, templates, baseElm }: InfiniteG
 
   createStateRenderer(() => {
     const handleScrollValueUpdate = (scroll: number) => {
-
       // use y position scroll when not using touch mode
-      !useTouchInput.value && stylesheet(gridScrollContent, {
-        y: -scroll
-      })
+      !useTouchInput.value &&
+        stylesheet(gridScrollContent, {
+          y: -scroll,
+        });
 
       const attemptCreateNewPage = () => {
         const APPEND_THRESHOLD = window.innerHeight / 2;
 
         // count height
-        const { positiveHeight, negativeHeight } = allPages.value.reduce((prev, curr) => {
-          if (curr.isInsertBefore) {
-            prev.negativeHeight += curr.height.value
+        const { positiveHeight, negativeHeight } = allPages.value.reduce(
+          (prev, curr) => {
+            if (curr.isInsertBefore) {
+              prev.negativeHeight += curr.height.value;
+              return prev;
+            }
+            prev.positiveHeight += curr.height.value;
             return prev;
-          }
-          prev.positiveHeight += curr.height.value;
-          return prev;
-        }, { positiveHeight: 0, negativeHeight: 0 });
+          },
+          { positiveHeight: 0, negativeHeight: 0 }
+        );
 
-        const shouldInsertNewPageAfter = positiveHeight < viewportHeight.value + scroll + APPEND_THRESHOLD;
+        const shouldInsertNewPageAfter =
+          positiveHeight < viewportHeight.value + scroll + APPEND_THRESHOLD;
         const shouldInsertNewPageBefore = scroll + negativeHeight < 0;
 
         const selectedTemplate = getRandomArrayItem(activeTemplates.value);
-
 
         if (shouldInsertNewPageBefore) {
           const newPage = createPage({
@@ -104,13 +110,10 @@ export const createInfiniteGrid = ({ renderCell, templates, baseElm }: InfiniteG
             renderFunction: renderCell,
             insertBefore: true,
             baseElm: negativeScrollContainer,
-            useTouchInput: useTouchInput
+            useTouchInput: useTouchInput,
           });
 
-          allPages.set([
-            ...allPages.value,
-            newPage
-          ])
+          allPages.set([...allPages.value, newPage]);
           return;
         }
 
@@ -120,34 +123,28 @@ export const createInfiniteGrid = ({ renderCell, templates, baseElm }: InfiniteG
             renderFunction: renderCell,
             insertBefore: false,
             baseElm: positiveScrollContainer,
-            useTouchInput: useTouchInput
+            useTouchInput: useTouchInput,
           });
 
-          allPages.set([
-            ...allPages.value,
-            newPage
-          ])
+          allPages.set([...allPages.value, newPage]);
           attemptCreateNewPage();
           return;
         }
-      }
-      requestAnimationFrame(attemptCreateNewPage)
+      };
+      requestAnimationFrame(attemptCreateNewPage);
     };
-
 
     // switch between touch scroll mode vs wheel scroll mode
     if (!useTouchInput.value) {
       scrollMotion.setValue(scrollPosition.value, handleScrollValueUpdate);
       return;
     }
-    handleScrollValueUpdate(scrollPosition.value)
-
+    handleScrollValueUpdate(scrollPosition.value);
   }, [scrollPosition, viewportHeight, activeTemplates]);
-
 
   const handlePageResize = () => {
     viewportHeight.set(window.innerHeight);
-  }
+  };
   handlePageResize();
 
   // TODO: working on touch scroll
@@ -156,7 +153,7 @@ export const createInfiniteGrid = ({ renderCell, templates, baseElm }: InfiniteG
       stylesheet(baseElm, {
         overflowX: "hidden",
         overflowY: "hidden",
-      })
+      });
       return;
     }
     disableScroll();
@@ -164,45 +161,41 @@ export const createInfiniteGrid = ({ renderCell, templates, baseElm }: InfiniteG
     stylesheet(baseElm, {
       overflowX: "hidden",
       overflowY: "scroll",
-    })
+    });
 
     const handleScroll = (e: Event) => {
       scrollPosition.set(baseElm.scrollTop);
-    }
+    };
     baseElm.addEventListener("scroll", handleScroll);
-  }
+  };
   // set initial touch scroll state
   useTouchInput.onChange(toggleTouchScroll);
   toggleTouchScroll(isTouchDevice);
 
-
   const handlePageScroll = (e: WheelEvent) => {
     if (!canScroll.value) return;
     scrollPosition.set(scrollPosition.value + e.deltaY);
-  }
+  };
   window.addEventListener("resize", handlePageResize);
   window.addEventListener("wheel", handlePageScroll);
 
   const cleanupInfiniteGrid = () => {
     window.removeEventListener("resize", handlePageResize);
     window.removeEventListener("wheel", handlePageScroll);
-  }
+  };
 
   const observePageCreation = (handlePageCreate) => {
-    allPages.onChange(handlePageCreate)
-  }
+    allPages.onChange(handlePageCreate);
+  };
 
   const unobservePageCreation = (handlePageCreate) => {
-    allPages.unobserveChange(handlePageCreate)
-  }
+    allPages.unobserveChange(handlePageCreate);
+  };
 
   const isInViewport = (elm: HTMLElement) => {
     const bounds = elm.getBoundingClientRect();
-    return (
-      bounds.bottom >= 0 &&
-      bounds.top <= (viewportHeight.value)
-    );
-  }
+    return bounds.bottom >= 0 && bounds.top <= viewportHeight.value;
+  };
 
   return {
     cleanupInfiniteGrid,
@@ -211,6 +204,6 @@ export const createInfiniteGrid = ({ renderCell, templates, baseElm }: InfiniteG
     isInViewport,
     enableScroll,
     disableScroll,
-    setGridTemplates: activeTemplates.set
+    setGridTemplates: activeTemplates.set,
   };
-}
+};
