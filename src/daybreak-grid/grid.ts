@@ -143,10 +143,6 @@ export const createInfiniteGrid = ({
             useTouchInput: useTouchInput,
           });
 
-          const firstPage = findFirstPage(allPages.value);
-          firstPage && firstPage.linkPrevPage(firstPage);
-          newPage.linkNextPage(firstPage);
-
           allPages.set([...allPages.value, newPage]);
           return;
         }
@@ -159,12 +155,6 @@ export const createInfiniteGrid = ({
             baseElm: positiveScrollContainer,
             useTouchInput: useTouchInput,
           });
-
-          console.log("insert after");
-
-          const lastPage = findLastPage(allPages.value);
-          lastPage && lastPage.linkNextPage(newPage);
-          newPage.linkPrevPage(lastPage);
 
           allPages.set([...allPages.value, newPage]);
           return;

@@ -8,12 +8,6 @@ export type GridState = {
   cellData: Array<Object>;
   cellStates: Array<Object>;
 };
-
-interface LinkedPages {
-  nextPage: GridPage | undefined;
-  prevPage: GridPage | undefined;
-}
-
 interface CellInfo {
   col: number;
   row: number;
@@ -40,37 +34,14 @@ const getCellInfo = (
   template: GridTemplate,
   cellElmsList: HTMLDivElement[],
   col: number,
-  row: number,
-  page: GridPage
+  row: number
 ): CellInfo => {
-  console.log(row);
-  console.log(template.content);
-
   const cellType = template.content[row][col];
   const currCellElmIndex = col + row * template.cols;
   const currCellElm = cellElmsList[currCellElmIndex];
 
   const getNearbyCell = (colDist: number, rowDist: number) => {
-    let rowInTargetPage: number = row + rowDist;
-    let targetPage: GridPage = page;
-    while (rowInTargetPage > targetPage.template.rows) {
-      rowInTargetPage -= targetPage.template.rows;
-      if (!targetPage.linkedPage.nextPage) {
-        throw "Cell does not exist";
-      }
-      targetPage = targetPage.linkedPage.nextPage;
-    }
-
-    console.log(rowInTargetPage);
-    console.log(targetPage);
-
-    return getCellInfo(
-      targetPage.template,
-      cellElmsList,
-      col + colDist,
-      rowInTargetPage,
-      targetPage
-    );
+    return getCellInfo(template, cellElmsList, col + colDist, row + rowDist);
   };
 
   return {
@@ -105,9 +76,6 @@ export interface GridPage {
   height: State<number>;
   cleanupPage: Function;
   isInsertBefore: boolean;
-  linkNextPage: (page: GridPage | undefined) => void;
-  linkPrevPage: (page: GridPage | undefined) => void;
-  linkedPage: LinkedPages;
   template: GridTemplate;
 }
 
@@ -117,7 +85,6 @@ interface GridPageConfig {
   baseElm: HTMLElement;
   insertBefore: boolean;
   useTouchInput: State<boolean>;
-  // positionY: number;
 }
 
 export const createPage = ({
@@ -130,8 +97,6 @@ export const createPage = ({
   const gridContainer = createGridContainer(template.cols);
   const cellElmsList = createGridCells(template, gridContainer);
   const cellCleanups: GridCellCleanup[] = [];
-
-  const linkedPage: LinkedPages = { nextPage: undefined, prevPage: undefined };
 
   // disable artifical scroll when using touch
   const handleTouchInputChange = (useTouch: boolean) => {
@@ -150,7 +115,6 @@ export const createPage = ({
   const page: GridPage = {
     pageElm: gridContainer,
     height: pageHeight,
-    linkedPage: linkedPage,
     template: template,
     isInsertBefore: insertBefore,
     cleanupPage: () => {
@@ -159,25 +123,13 @@ export const createPage = ({
       // cellElmsList.forEach((node) => gridContainer.removeChild(node));
       gridContainer.remove();
       window.removeEventListener("resize", handlePageResize);
-
-      // remove the page itself from the linkage
-      if (linkedPage.prevPage)
-        linkedPage.prevPage.linkNextPage(linkedPage.nextPage);
-      if (linkedPage.nextPage)
-        linkedPage.nextPage.linkPrevPage(linkedPage.prevPage);
-    },
-    linkNextPage: (page: GridPage | undefined) => {
-      linkedPage.nextPage = page;
-    },
-    linkPrevPage: (page: GridPage | undefined) => {
-      linkedPage.prevPage = page;
     },
   };
 
   // create cells
   for (let row = 0; row < template.rows; row++) {
     for (let col = 0; col < template.cols; col++) {
-      const cellInfo = getCellInfo(template, cellElmsList, col, row, page);
+      const cellInfo = getCellInfo(template, cellElmsList, col, row);
       const cleanupFunction = renderFunction(cellInfo);
 
       // cleanup and remove elms
