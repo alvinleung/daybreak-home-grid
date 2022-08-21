@@ -5,19 +5,19 @@ type GridCellCleanup = () => void;
 export type GridCellRenderer = (cellInfo: CellInfo) => GridCellCleanup | void;
 
 export type GridState = {
-  cellData: Array<Object>,
-  cellStates: Array<Object>
-}
+  cellData: Array<Object>;
+  cellStates: Array<Object>;
+};
 
 interface CellInfo {
-  col: number,
-  row: number,
-  isFirstCol: boolean,
-  isLastCol: boolean,
-  type: string,
-  elm: HTMLDivElement,
-  getNearbyCell: (colDist: number, rowDist: number) => CellInfo,
-  onUpdate: Function
+  col: number;
+  row: number;
+  isFirstCol: boolean;
+  isLastCol: boolean;
+  type: string;
+  elm: HTMLDivElement;
+  getNearbyCell: (colDist: number, rowDist: number) => CellInfo;
+  onUpdate: Function;
 }
 
 const createGridCells = (template: GridTemplate, baseElm: HTMLDivElement) => {
@@ -32,14 +32,28 @@ const createGridCells = (template: GridTemplate, baseElm: HTMLDivElement) => {
   return cellElmsList;
 };
 
-const getCellInfo = (template: GridTemplate, cellElmsList: HTMLDivElement[], col: number, row: number, onUpdate: Function): CellInfo => {
+const getCellInfo = (
+  template: GridTemplate,
+  cellElmsList: HTMLDivElement[],
+  col: number,
+  row: number,
+  onUpdate: Function
+): CellInfo => {
+  console.log(row);
+
   const cellType = template.content[row][col];
-  const currCellElmIndex = col + (row * template.cols);
+  const currCellElmIndex = col + row * template.cols;
   const currCellElm = cellElmsList[currCellElmIndex];
 
   const getNearbyCell = (colDist: number, rowDist: number) => {
-    return getCellInfo(template, cellElmsList, col + colDist, row + rowDist, onUpdate)
-  }
+    return getCellInfo(
+      template,
+      cellElmsList,
+      col + colDist,
+      row + rowDist,
+      onUpdate
+    );
+  };
 
   return {
     type: cellType,
@@ -50,8 +64,8 @@ const getCellInfo = (template: GridTemplate, cellElmsList: HTMLDivElement[], col
     isFirstCol: col === 0,
     isLastCol: col === template.cols,
     onUpdate: (handler: Function) => onUpdate(handler),
-  }
-}
+  };
+};
 
 const createGridContainer = (colCount: number) => {
   const gridContainer = document.createElement("div");
@@ -63,12 +77,11 @@ const createGridContainer = (colCount: number) => {
     gap: "24px",
     rowGap: "24px",
     width: "100%",
-    marginBottom: "24px"
-  })
+    marginBottom: "24px",
+  });
 
   return gridContainer;
-}
-
+};
 
 export interface GridPage {
   pageElm: HTMLDivElement;
@@ -86,7 +99,13 @@ interface GridPageConfig {
   // positionY: number;
 }
 
-export const createPage = ({ template, renderFunction, insertBefore, baseElm, useTouchInput }: GridPageConfig): GridPage => {
+export const createPage = ({
+  template,
+  renderFunction,
+  insertBefore,
+  baseElm,
+  useTouchInput,
+}: GridPageConfig): GridPage => {
   const gridContainer = createGridContainer(template.cols);
   const cellElmsList = createGridCells(template, gridContainer);
   const cellCleanups: GridCellCleanup[] = [];
@@ -94,7 +113,7 @@ export const createPage = ({ template, renderFunction, insertBefore, baseElm, us
   const updateHandlers: Function[] = [];
   const onUpdate = (callback: Function) => {
     updateHandlers.push(callback);
-  }
+  };
 
   // create cells
   for (let row = 0; row < template.rows; row++) {
@@ -104,7 +123,7 @@ export const createPage = ({ template, renderFunction, insertBefore, baseElm, us
 
       // cleanup and remove elms
       cellCleanups.push(() => {
-        cleanupFunction && cleanupFunction()
+        cleanupFunction && cleanupFunction();
       });
     }
   }
@@ -115,14 +134,14 @@ export const createPage = ({ template, renderFunction, insertBefore, baseElm, us
   const handleTouchInputChange = (useTouch: boolean) => {
     if (!useTouch) return;
     gridContainer.style.overflowY = "scroll";
-  }
+  };
   useTouchInput.onChange(handleTouchInputChange);
 
   // measure height every time it changes
   const pageHeight = state(gridContainer.getBoundingClientRect().height);
   const handlePageResize = () => {
     pageHeight.set(gridContainer.getBoundingClientRect().height);
-  }
+  };
   window.addEventListener("resize", handlePageResize);
 
   return {
@@ -135,6 +154,6 @@ export const createPage = ({ template, renderFunction, insertBefore, baseElm, us
       // cellElmsList.forEach((node) => gridContainer.removeChild(node));
       gridContainer.remove();
       window.removeEventListener("resize", handlePageResize);
-    }
+    },
   };
-}
+};
