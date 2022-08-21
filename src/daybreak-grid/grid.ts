@@ -61,7 +61,7 @@ export const createInfiniteGrid = ({
     left: "0px",
     right: "0px",
     display: "flex",
-    flexDirection: "column",
+    flexDirection: "column-reverse",
     flexWrap: "wrap",
   });
   stylesheet(baseElm, {
@@ -98,6 +98,9 @@ export const createInfiniteGrid = ({
           },
           { positiveHeight: 0, negativeHeight: 0 }
         );
+
+        console.log(positiveHeight);
+        console.log(negativeHeight);
 
         const shouldInsertNewPageAfter =
           positiveHeight < viewportHeight.value + scroll + APPEND_THRESHOLD;
