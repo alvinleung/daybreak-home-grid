@@ -72,7 +72,7 @@ const createGridContainer = (colCount: number, gridGap: number) => {
   const setGridGap = (newGap: number) => {
     stylesheet(gridContainer, {
       gap: newGap + "px",
-      rowGap: newGap + "24px",
+      rowGap: newGap + "px",
     });
   };
 
