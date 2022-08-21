@@ -143,7 +143,7 @@ export const createInfiniteGrid = ({
             useTouchInput: useTouchInput,
           });
 
-          const firstPage = findLastPage(allPages.value);
+          const firstPage = findFirstPage(allPages.value);
           firstPage && firstPage.linkPrevPage(firstPage);
           newPage.linkNextPage(firstPage);
 
@@ -167,9 +167,10 @@ export const createInfiniteGrid = ({
           newPage.linkPrevPage(lastPage);
 
           allPages.set([...allPages.value, newPage]);
-          attemptCreateNewPage();
           return;
         }
+
+        attemptCreateNewPage();
       };
       requestAnimationFrame(attemptCreateNewPage);
     };
