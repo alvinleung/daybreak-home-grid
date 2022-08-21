@@ -99,14 +99,14 @@ export const createInfiniteGrid = ({
           { positiveHeight: 0, negativeHeight: 0 }
         );
 
-        console.log(positiveHeight);
-        console.log(negativeHeight);
-
         const shouldInsertNewPageAfter =
           positiveHeight < viewportHeight.value + scroll + APPEND_THRESHOLD;
         const shouldInsertNewPageBefore = scroll + negativeHeight < 0;
 
         const selectedTemplate = getRandomArrayItem(activeTemplates.value);
+
+        console.log(shouldInsertNewPageAfter);
+        console.log(shouldInsertNewPageBefore);
 
         if (shouldInsertNewPageBefore) {
           const newPage = createPage({
