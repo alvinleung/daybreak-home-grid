@@ -75,6 +75,35 @@ export const createInfiniteGrid = ({
 
   const scrollMotion = createSmoothMotion({ initial: 0, smoothFactor: 0.05 });
 
+  // const getPageAtIndex = (index: number) => {
+  //   const { positiveCount, negativeCount } = allPages.value.reduce(
+  //     (prev, curr) => {
+  //       if (curr.isInsertBefore) prev.negativeCount++;
+  //       else prev.positiveCount++;
+
+  //       return prev;
+  //     },
+  //     { positiveCount: 0, negativeCount: 0 }
+  //   );
+
+  //   console.log(positiveCount);
+  // };
+
+  const findFirstPage = (allPages: GridPage[]) => {
+    for (let i = 0; i < allPages.length; i++) {
+      const page = allPages[i];
+      if (page.isInsertBefore) return page;
+    }
+    return allPages[0];
+  };
+  const findLastPage = (allPages: GridPage[]) => {
+    for (let i = allPages.length - 1; i >= 0; i--) {
+      const page = allPages[i];
+      if (!page.isInsertBefore) return page;
+    }
+    return allPages[allPages.length - 1];
+  };
+
   createStateRenderer(() => {
     const handleScrollValueUpdate = (scroll: number) => {
       // use y position scroll when not using touch mode
@@ -115,7 +144,6 @@ export const createInfiniteGrid = ({
           });
 
           allPages.set([...allPages.value, newPage]);
-          attemptCreateNewPage();
           return;
         }
 
@@ -128,10 +156,12 @@ export const createInfiniteGrid = ({
             useTouchInput: useTouchInput,
           });
 
+          console.log("insert after");
           allPages.set([...allPages.value, newPage]);
-          attemptCreateNewPage();
           return;
         }
+
+        attemptCreateNewPage();
       };
       requestAnimationFrame(attemptCreateNewPage);
     };
