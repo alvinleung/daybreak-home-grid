@@ -156,7 +156,6 @@ export const createInfiniteGrid = ({
             useTouchInput: useTouchInput,
           });
 
-          console.log("insert after");
           allPages.set([...allPages.value, newPage]);
           attemptCreateNewPage();
           return;

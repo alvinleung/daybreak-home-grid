@@ -37,9 +37,6 @@ const getCellInfo = (
   col: number,
   row: number
 ): CellInfo => {
-  console.log(row);
-  console.log(template.content);
-
   const cellType = template.content[row][col];
   const currCellElmIndex = col + row * template.cols;
   const currCellElm = cellElmsList[currCellElmIndex];
