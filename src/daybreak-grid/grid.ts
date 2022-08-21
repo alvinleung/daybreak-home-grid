@@ -144,8 +144,8 @@ export const createInfiniteGrid = ({
           });
 
           const firstPage = findLastPage(allPages.value);
-          firstPage.connectPrevPage(firstPage);
-          newPage.connectNextPage(firstPage);
+          firstPage.linkPrevPage(firstPage);
+          newPage.linkNextPage(firstPage);
 
           allPages.set([...allPages.value, newPage]);
           return;
@@ -161,8 +161,8 @@ export const createInfiniteGrid = ({
           });
 
           const lastPage = findLastPage(allPages.value);
-          lastPage.connectNextPage(newPage);
-          newPage.connectPrevPage(lastPage);
+          lastPage.linkNextPage(newPage);
+          newPage.linkPrevPage(lastPage);
 
           allPages.set([...allPages.value, newPage]);
           attemptCreateNewPage();

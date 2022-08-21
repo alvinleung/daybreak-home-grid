@@ -102,8 +102,8 @@ export interface GridPage {
   height: State<number>;
   cleanupPage: Function;
   isInsertBefore: boolean;
-  connectNextPage: (page: GridPage | undefined) => void;
-  connectPrevPage: (page: GridPage | undefined) => void;
+  linkNextPage: (page: GridPage | undefined) => void;
+  linkPrevPage: (page: GridPage | undefined) => void;
   linkedPage: LinkedPages;
   template: GridTemplate;
 }
@@ -158,13 +158,15 @@ export const createPage = ({
       window.removeEventListener("resize", handlePageResize);
 
       // remove the page itself from the linkage
-      linkedPage.prevPage?.connectNextPage(linkedPage.nextPage);
-      linkedPage.nextPage?.connectPrevPage(linkedPage.prevPage);
+      if (linkedPage.prevPage)
+        linkedPage.prevPage.linkNextPage(linkedPage.nextPage);
+      if (linkedPage.nextPage)
+        linkedPage.nextPage.linkPrevPage(linkedPage.prevPage);
     },
-    connectNextPage: (page: GridPage | undefined) => {
+    linkNextPage: (page: GridPage | undefined) => {
       linkedPage.nextPage = page;
     },
-    connectPrevPage: (page: GridPage | undefined) => {
+    linkPrevPage: (page: GridPage | undefined) => {
       linkedPage.prevPage = page;
     },
   };
