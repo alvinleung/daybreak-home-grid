@@ -61,6 +61,9 @@ const getCellInfo = (
       targetPage = targetPage.linkedPage.nextPage;
     }
 
+    console.log(rowInTargetPage);
+    console.log(targetPage);
+
     return getCellInfo(
       template,
       cellElmsList,
