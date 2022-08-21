@@ -61,7 +61,7 @@ export const createInfiniteGrid = ({
     left: "0px",
     right: "0px",
     display: "flex",
-    flexDirection: "column-reverse",
+    flexDirection: "column",
     flexWrap: "wrap",
   });
   stylesheet(baseElm, {
