@@ -53,13 +53,13 @@ const getCellInfo = (
   const getNearbyCell = (colDist: number, rowDist: number) => {
     let rowInTargetPage: number = row + rowDist;
     let targetPage: GridPage = page;
-    // while (rowInTargetPage > targetPage.template.rows) {
-    //   rowInTargetPage -= targetPage.template.rows;
-    //   if (!targetPage.linkedPage.nextPage) {
-    //     throw "Cell does not exist";
-    //   }
-    //   targetPage = targetPage.linkedPage.nextPage;
-    // }
+    while (rowInTargetPage > targetPage.template.rows) {
+      rowInTargetPage -= targetPage.template.rows;
+      if (!targetPage.linkedPage.nextPage) {
+        throw "Cell does not exist";
+      }
+      targetPage = targetPage.linkedPage.nextPage;
+    }
 
     return getCellInfo(
       template,
