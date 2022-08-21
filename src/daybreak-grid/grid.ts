@@ -25,10 +25,17 @@ export const createInfiniteGrid = ({
 }: InfiniteGridConfig) => {
   const scrollPosition = state(0);
   const viewportHeight = state(window.innerHeight);
+  const gridGap = state(24);
   const allPages = state([] as GridPage[]);
   const canScroll = state(true);
   const activeTemplates = state<GridTemplate[]>(templates);
   const useTouchInput = state(isTouchDevice);
+
+  gridGap.onChange((newVal) => {
+    allPages.value.forEach((page) => {
+      page.setGridGap(newVal);
+    });
+  });
 
   activeTemplates.onChange(() => {
     if (allPages.value.length === 0) return;
@@ -112,6 +119,7 @@ export const createInfiniteGrid = ({
             insertBefore: true,
             baseElm: negativeScrollContainer,
             useTouchInput: useTouchInput,
+            gridGap: gridGap.value,
           });
 
           allPages.set([...allPages.value, newPage]);
@@ -126,6 +134,7 @@ export const createInfiniteGrid = ({
             insertBefore: false,
             baseElm: positiveScrollContainer,
             useTouchInput: useTouchInput,
+            gridGap: gridGap.value,
           });
 
           allPages.set([...allPages.value, newPage]);
@@ -207,5 +216,6 @@ export const createInfiniteGrid = ({
     enableScroll,
     disableScroll,
     setGridTemplates: activeTemplates.set,
+    setGridGap: gridGap.set,
   };
 };

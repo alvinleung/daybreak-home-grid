@@ -56,20 +56,27 @@ const getCellInfo = (
   };
 };
 
-const createGridContainer = (colCount: number) => {
+const createGridContainer = (colCount: number, gridGap: number) => {
   const gridContainer = document.createElement("div");
   stylesheet(gridContainer, {
     // position: "absolute",
     // top: positionY + "px",
     display: "grid",
     gridTemplateColumns: `repeat(${colCount}, 1fr)`,
-    gap: "24px",
-    rowGap: "24px",
+    gap: gridGap + "px",
+    rowGap: gridGap + "24px",
     width: "100%",
     marginBottom: "24px",
   });
 
-  return gridContainer;
+  const setGridGap = (newGap: number) => {
+    stylesheet(gridContainer, {
+      gap: newGap + "px",
+      rowGap: newGap + "24px",
+    });
+  };
+
+  return { gridContainer, setGridGap };
 };
 
 export interface GridPage {
@@ -77,15 +84,16 @@ export interface GridPage {
   height: State<number>;
   cleanupPage: Function;
   isInsertBefore: boolean;
+  setGridGap: (value: number) => void;
 }
 
 interface GridPageConfig {
   template: GridTemplate;
+  gridGap: number;
   renderFunction: GridCellRenderer;
   baseElm: HTMLElement;
   insertBefore: boolean;
   useTouchInput: State<boolean>;
-  // positionY: number;
 }
 
 export const createPage = ({
@@ -94,15 +102,14 @@ export const createPage = ({
   insertBefore,
   baseElm,
   useTouchInput,
+  gridGap,
 }: GridPageConfig): GridPage => {
-  const gridContainer = createGridContainer(template.cols);
+  const { gridContainer, setGridGap } = createGridContainer(
+    template.cols,
+    gridGap
+  );
   const cellElmsList = createGridCells(template, gridContainer);
   const cellCleanups: GridCellCleanup[] = [];
-
-  const updateHandlers: Function[] = [];
-  const onUpdate = (callback: Function) => {
-    updateHandlers.push(callback);
-  };
 
   // create cells
   for (let row = 0; row < template.rows; row++) {
@@ -144,5 +151,6 @@ export const createPage = ({
       gridContainer.remove();
       window.removeEventListener("resize", handlePageResize);
     },
+    setGridGap: setGridGap,
   };
 };
