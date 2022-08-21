@@ -158,10 +158,9 @@ export const createInfiniteGrid = ({
 
           console.log("insert after");
           allPages.set([...allPages.value, newPage]);
+          attemptCreateNewPage();
           return;
         }
-
-        attemptCreateNewPage();
       };
       requestAnimationFrame(attemptCreateNewPage);
     };
