@@ -118,6 +118,7 @@ export const createInfiniteGrid = ({
           });
 
           allPages.set([...allPages.value, newPage]);
+          attemptCreateNewPage();
           return;
         }
 
@@ -131,10 +132,9 @@ export const createInfiniteGrid = ({
           });
 
           allPages.set([...allPages.value, newPage]);
+          attemptCreateNewPage();
           return;
         }
-
-        attemptCreateNewPage();
       };
       requestAnimationFrame(attemptCreateNewPage);
     };
