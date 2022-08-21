@@ -51,7 +51,7 @@ const getCellInfo = (
   const currCellElm = cellElmsList[currCellElmIndex];
 
   const getNearbyCell = (colDist: number, rowDist: number) => {
-    let rowInTargetPage: number = rowDist;
+    let rowInTargetPage: number = row + rowDist;
     let targetPage: GridPage = page;
     while (rowInTargetPage > targetPage.template.rows) {
       rowInTargetPage -= targetPage.template.rows;
