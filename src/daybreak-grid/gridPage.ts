@@ -8,6 +8,7 @@ export type GridState = {
   cellData: Array<Object>;
   cellStates: Array<Object>;
 };
+
 interface CellInfo {
   col: number;
   row: number;
@@ -36,6 +37,9 @@ const getCellInfo = (
   col: number,
   row: number
 ): CellInfo => {
+  console.log(row);
+  console.log(template.content);
+
   const cellType = template.content[row][col];
   const currCellElmIndex = col + row * template.cols;
   const currCellElm = cellElmsList[currCellElmIndex];
@@ -76,7 +80,6 @@ export interface GridPage {
   height: State<number>;
   cleanupPage: Function;
   isInsertBefore: boolean;
-  template: GridTemplate;
 }
 
 interface GridPageConfig {
@@ -85,6 +88,7 @@ interface GridPageConfig {
   baseElm: HTMLElement;
   insertBefore: boolean;
   useTouchInput: State<boolean>;
+  // positionY: number;
 }
 
 export const createPage = ({
@@ -98,32 +102,9 @@ export const createPage = ({
   const cellElmsList = createGridCells(template, gridContainer);
   const cellCleanups: GridCellCleanup[] = [];
 
-  // disable artifical scroll when using touch
-  const handleTouchInputChange = (useTouch: boolean) => {
-    if (!useTouch) return;
-    gridContainer.style.overflowY = "scroll";
-  };
-  useTouchInput.onChange(handleTouchInputChange);
-
-  // measure height every time it changes
-  const pageHeight = state(gridContainer.getBoundingClientRect().height);
-  const handlePageResize = () => {
-    pageHeight.set(gridContainer.getBoundingClientRect().height);
-  };
-  window.addEventListener("resize", handlePageResize);
-
-  const page: GridPage = {
-    pageElm: gridContainer,
-    height: pageHeight,
-    template: template,
-    isInsertBefore: insertBefore,
-    cleanupPage: () => {
-      useTouchInput.unobserveChange(handleTouchInputChange);
-      cellCleanups.forEach((cleanup) => cleanup());
-      // cellElmsList.forEach((node) => gridContainer.removeChild(node));
-      gridContainer.remove();
-      window.removeEventListener("resize", handlePageResize);
-    },
+  const updateHandlers: Function[] = [];
+  const onUpdate = (callback: Function) => {
+    updateHandlers.push(callback);
   };
 
   // create cells
@@ -140,5 +121,31 @@ export const createPage = ({
   }
 
   baseElm.append(gridContainer);
-  return page;
+
+  // disable artifical scroll when using touch
+  const handleTouchInputChange = (useTouch: boolean) => {
+    if (!useTouch) return;
+    gridContainer.style.overflowY = "scroll";
+  };
+  useTouchInput.onChange(handleTouchInputChange);
+
+  // measure height every time it changes
+  const pageHeight = state(gridContainer.getBoundingClientRect().height);
+  const handlePageResize = () => {
+    pageHeight.set(gridContainer.getBoundingClientRect().height);
+  };
+  window.addEventListener("resize", handlePageResize);
+
+  return {
+    pageElm: gridContainer,
+    height: pageHeight,
+    isInsertBefore: insertBefore,
+    cleanupPage: () => {
+      useTouchInput.unobserveChange(handleTouchInputChange);
+      cellCleanups.forEach((cleanup) => cleanup());
+      // cellElmsList.forEach((node) => gridContainer.removeChild(node));
+      gridContainer.remove();
+      window.removeEventListener("resize", handlePageResize);
+    },
+  };
 };
