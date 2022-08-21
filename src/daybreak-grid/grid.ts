@@ -105,9 +105,6 @@ export const createInfiniteGrid = ({
 
         const selectedTemplate = getRandomArrayItem(activeTemplates.value);
 
-        console.log(shouldInsertNewPageAfter);
-        console.log(shouldInsertNewPageBefore);
-
         if (shouldInsertNewPageBefore) {
           const newPage = createPage({
             template: selectedTemplate,
