@@ -66,13 +66,14 @@ const createGridContainer = (colCount: number, gridGap: number) => {
     gap: gridGap + "px",
     rowGap: gridGap + "px",
     width: "100%",
-    marginBottom: "24px",
+    marginBottom: gridGap + "px",
   });
 
   const setGridGap = (newGap: number) => {
     stylesheet(gridContainer, {
       gap: newGap + "px",
       rowGap: newGap + "px",
+      marginBottom: newGap + "px",
     });
   };
 
