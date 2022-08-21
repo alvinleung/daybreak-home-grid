@@ -1,7 +1,9 @@
 import { createInfiniteGrid } from "./daybreak-grid/grid";
 import { createGridTemplate } from "./daybreak-grid/gridTemplate";
-import { ShuffeableData, shuffleGridData } from "./daybreak-grid/shuffleGridData";
-
+import {
+  ShuffeableData,
+  shuffleGridData,
+} from "./daybreak-grid/shuffleGridData";
 
 interface ProjectData {
   importance: number;
@@ -9,7 +11,7 @@ interface ProjectData {
   name: string;
   description: string;
   year: string;
-  expertise: string[]
+  expertise: string[];
 }
 
 interface ProjectCellData {
@@ -18,14 +20,11 @@ interface ProjectCellData {
   name: string;
   description: string;
   year: string;
-  expertise: string[]
+  expertise: string[];
 }
-
-
 
 const CELL_EMPTY = "empty";
 const CELL_PROJECT = "project";
-
 
 // alias for project and empty cells
 const _ = CELL_EMPTY;
@@ -42,8 +41,8 @@ const gridTemplateMobile = [
     [_, X, _],
     [X, _, _],
     [X, _, X],
-  ])
-]
+  ]),
+];
 
 const gridTemplates = [
   createGridTemplate([
@@ -68,122 +67,161 @@ const gridTemplates = [
     [X, _, _, _, X, _, _, X],
     [X, _, X, _, _, X, _, _],
   ]),
-]
+];
 
 const allProjectsData: ProjectData[] = [
   {
     importance: 0,
     cover: [
       "https://uploads-ssl.webflow.com/62997260adfee40c8c586a19/62ab5f069babcfe42d9fd420_Frame%20481941.png",
-      "https://uploads-ssl.webflow.com/62997260adfee40c8c586a19/62ab5f069babcfe42d9fd420_Frame%20481941.png"
+      "https://uploads-ssl.webflow.com/62997260adfee40c8c586a19/62ab5f069babcfe42d9fd420_Frame%20481941.png",
     ],
     name: "Inspired",
     description: "Unifying brands and consumers",
     year: "2022",
-    expertise: ["Brand Identity", "Strategy", "Product"]
+    expertise: ["Brand Identity", "Strategy", "Product"],
   },
   {
     importance: 0,
-    cover: ["https://uploads-ssl.webflow.com/62997260adfee40c8c586a19/62ab5f069babcfe42d9fd420_Frame%20481941.png"],
+    cover: [
+      "https://uploads-ssl.webflow.com/62997260adfee40c8c586a19/62ab5f069babcfe42d9fd420_Frame%20481941.png",
+    ],
     name: "Party Round",
     description: "An automated fundraising tool.",
     year: "2022",
-    expertise: ["Brand Identity", "Web Design"]
+    expertise: ["Brand Identity", "Web Design"],
   },
   {
     importance: 0,
-    cover: ["https://uploads-ssl.webflow.com/62997260adfee40c8c586a19/62ab5f069babcfe42d9fd420_Frame%20481941.png"],
+    cover: [
+      "https://uploads-ssl.webflow.com/62997260adfee40c8c586a19/62ab5f069babcfe42d9fd420_Frame%20481941.png",
+    ],
     name: "Prologue",
     description: "The tech holding company of the 2020s.",
     year: "2022",
-    expertise: ["Brand Identity", "Naming", "Strategy"]
+    expertise: ["Brand Identity", "Naming", "Strategy"],
   },
   {
     importance: 1,
-    cover: ["https://uploads-ssl.webflow.com/62997260adfee40c8c586a19/62ab5f069babcfe42d9fd420_Frame%20481941.png"],
+    cover: [
+      "https://uploads-ssl.webflow.com/62997260adfee40c8c586a19/62ab5f069babcfe42d9fd420_Frame%20481941.png",
+    ],
     name: "Wombo Dream",
     description: "High-quality artwork created in seconds.",
     year: "2022",
-    expertise: ["Expertise", "Expertise"]
+    expertise: ["Expertise", "Expertise"],
   },
 
   {
     importance: 1,
-    cover: ["https://uploads-ssl.webflow.com/62997260adfee40c8c586a19/62ab5f069babcfe42d9fd420_Frame%20481941.png"],
+    cover: [
+      "https://uploads-ssl.webflow.com/62997260adfee40c8c586a19/62ab5f069babcfe42d9fd420_Frame%20481941.png",
+    ],
     name: "Hyper",
     description: "Serving the next generation of founders.",
     year: "2022",
-    expertise: ["Web Design"]
+    expertise: ["Web Design"],
   },
   {
     importance: 2,
-    cover: ["https://uploads-ssl.webflow.com/62997260adfee40c8c586a19/62ab5f069babcfe42d9fd420_Frame%20481941.png"],
+    cover: [
+      "https://uploads-ssl.webflow.com/62997260adfee40c8c586a19/62ab5f069babcfe42d9fd420_Frame%20481941.png",
+    ],
     name: "Party Grounds",
     description: "Description for Party Grounds.",
     year: "2022",
-    expertise: ["Web Design"]
+    expertise: ["Web Design"],
   },
   {
     importance: 2,
-    cover: ["https://uploads-ssl.webflow.com/62997260adfee40c8c586a19/62ab5f069babcfe42d9fd420_Frame%20481941.png"],
+    cover: [
+      "https://uploads-ssl.webflow.com/62997260adfee40c8c586a19/62ab5f069babcfe42d9fd420_Frame%20481941.png",
+    ],
     name: "Notes About People",
     description: "For your mind and the people in your life.",
     year: "2020",
-    expertise: ["Product Design", "Visual Identity"]
+    expertise: ["Product Design", "Visual Identity"],
   },
   {
     importance: 2,
-    cover: ["https://uploads-ssl.webflow.com/62997260adfee40c8c586a19/62ab5f069babcfe42d9fd420_Frame%20481941.png"],
+    cover: [
+      "https://uploads-ssl.webflow.com/62997260adfee40c8c586a19/62ab5f069babcfe42d9fd420_Frame%20481941.png",
+    ],
     name: "Startup Supreme",
     description: "Wearing digital nostaglia.",
     year: "2021",
-    expertise: ["Brand Identity", "Web Design"]
+    expertise: ["Brand Identity", "Web Design"],
   },
   {
     importance: 2,
-    cover: ["https://uploads-ssl.webflow.com/62997260adfee40c8c586a19/62ab5f069babcfe42d9fd420_Frame%20481941.png"],
+    cover: [
+      "https://uploads-ssl.webflow.com/62997260adfee40c8c586a19/62ab5f069babcfe42d9fd420_Frame%20481941.png",
+    ],
     name: "VC Puzzle",
     description: "A Shrug x Party Round collaboration.",
     year: "2022",
-    expertise: ["Brand Identity", "Web Design", "Packaging Design"]
+    expertise: ["Brand Identity", "Web Design", "Packaging Design"],
   },
   {
     importance: 1,
-    cover: ["https://uploads-ssl.webflow.com/62997260adfee40c8c586a19/62ab5f069babcfe42d9fd420_Frame%20481941.png"],
+    cover: [
+      "https://uploads-ssl.webflow.com/62997260adfee40c8c586a19/62ab5f069babcfe42d9fd420_Frame%20481941.png",
+    ],
     name: "Workweek",
     description: "Putting creators first.",
     year: "2021",
-    expertise: ["Brand Identity", "Web Design"]
-  }
-]
+    expertise: ["Brand Identity", "Web Design"],
+  },
+];
 
 function readProjectDataFromHTML() {
-  const baseElm = document.querySelector(".all-daybreak-projects") as HTMLDivElement;
+  const baseElm = document.querySelector(
+    ".all-daybreak-projects"
+  ) as HTMLDivElement;
   const allProjects = baseElm.querySelectorAll(".daybreak-project");
   const projectData = Array.from(allProjects).map((projectElm) => {
-    const importanceElm = projectElm.querySelector(".daybreak-project-importance") as HTMLDivElement;
-    const nameElm = projectElm.querySelector(".daybreak-project-name") as HTMLDivElement;
-    const descriptionElm = projectElm.querySelector(".daybreak-project-description") as HTMLDivElement;
-    const yearElm = projectElm.querySelector(".daybreak-project-year") as HTMLDivElement;
-    const expertiseElm = projectElm.querySelector(".daybreak-project-expertise") as HTMLDivElement;
-    const coverElm = projectElm.querySelector(".daybreak-project-cover") as HTMLDivElement;
+    const importanceElm = projectElm.querySelector(
+      ".daybreak-project-importance"
+    ) as HTMLDivElement;
+    const nameElm = projectElm.querySelector(
+      ".daybreak-project-name"
+    ) as HTMLDivElement;
+    const descriptionElm = projectElm.querySelector(
+      ".daybreak-project-description"
+    ) as HTMLDivElement;
+    const yearElm = projectElm.querySelector(
+      ".daybreak-project-year"
+    ) as HTMLDivElement;
+    const expertiseElm = projectElm.querySelector(
+      ".daybreak-project-expertise"
+    ) as HTMLDivElement;
+    const coverElm = projectElm.querySelector(
+      ".daybreak-project-cover"
+    ) as HTMLDivElement;
 
     const importance = parseInt(importanceElm.innerHTML);
     const name = nameElm.innerHTML;
     const description = descriptionElm.innerHTML;
     const year = yearElm.innerHTML;
-    const expertise = expertiseElm.innerHTML.split(",").map((str) => str.trim());
-    const cover = Array.from(coverElm.children).map((elm) => (elm as HTMLImageElement).src);
+    const expertise = expertiseElm.innerHTML
+      .split(",")
+      .map((str) => str.trim());
+    const cover = Array.from(coverElm.children).map(
+      (elm) => (elm as HTMLImageElement).src
+    );
 
     return {
-      importance, name, description, year, expertise, cover,
-    }
-  })
+      importance,
+      name,
+      description,
+      year,
+      expertise,
+      cover,
+    };
+  });
 
   return projectData;
 }
-
-
 
 // function createProjectDOM(project: ProjectData) {
 //   const container = document.createElement("div");
@@ -230,10 +268,10 @@ const apiExports = {
   createInfiniteGrid,
   createGridTemplate,
   shuffleGridData,
-}
+};
 
 //@ts-ignore
-window.daybreak = { ...window.daybreak, grid: apiExports }
+window.daybreak = { ...window.daybreak, grid: apiExports };
 
 const initTestingEnvironment = () => {
   const projectDataFromHTML = readProjectDataFromHTML();
@@ -242,23 +280,25 @@ const initTestingEnvironment = () => {
   const cellData = projectDataFromHTML.reduce((arr, currProject) => {
     currProject.cover.forEach((coverImageUrl) => {
       arr.push({
-        ...currProject, cover: coverImageUrl
-      })
-    })
+        ...currProject,
+        cover: coverImageUrl,
+      });
+    });
 
     return arr;
-  }, [] as ProjectCellData[])
+  }, [] as ProjectCellData[]);
 
-  const cellDataShuffled = shuffleGridData(cellData.reduce((arr, curr) => {
-    arr.push({ importance: curr.importance, data: curr });
-    return arr
-  }, [] as ShuffeableData<ProjectCellData>[]));
+  const cellDataShuffled = shuffleGridData(
+    cellData.reduce((arr, curr) => {
+      arr.push({ importance: curr.importance, data: curr });
+      return arr;
+    }, [] as ShuffeableData<ProjectCellData>[])
+  );
 
   const { cleanupInfiniteGrid, setGridTemplates } = createInfiniteGrid({
     templates: gridTemplates,
     baseElm: document.querySelector(".daybreak-grid") as HTMLDivElement,
     renderCell: (cellInfo) => {
-
       cellInfo.elm.style.height = "100px";
 
       // for empty cells
@@ -270,19 +310,14 @@ const initTestingEnvironment = () => {
 
       const celldata = cellDataShuffled.next();
       cellInfo.elm.innerHTML = celldata.name;
-      cellInfo.onUpdate(() => {
-        console.log("update")
-      })
 
       // cleanup
-      return () => {
-
-      }
-    }
+      return () => {};
+    },
   });
 
   setGridTemplates(gridTemplateMobile);
-}
+};
 
 if (window.location.hash === "local")
   window.addEventListener("load", initTestingEnvironment);
