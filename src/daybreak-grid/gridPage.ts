@@ -65,7 +65,7 @@ const getCellInfo = (
     console.log(targetPage);
 
     return getCellInfo(
-      template,
+      targetPage.template,
       cellElmsList,
       col + colDist,
       rowInTargetPage,
