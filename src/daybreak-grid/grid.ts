@@ -233,5 +233,7 @@ export const createInfiniteGrid = ({
     setGridTemplates: activeTemplates.set,
     setGridGap: gridGap.set,
     setTopPadding: topPadding.set,
+    observeScroll: scrollPosition.onChange,
+    unobserveScroll: scrollPosition.unobserveChange,
   };
 };
