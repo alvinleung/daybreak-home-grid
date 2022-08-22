@@ -164,9 +164,11 @@ export const createInfiniteGrid = ({
   topPadding.onChange((newPadding) => {
     if (newPadding === 0) {
       useNegativeContainer.set(true);
+      disableScroll();
       return;
     }
 
+    enableScroll();
     useNegativeContainer.set(false);
     stylesheet(positiveScrollContainer, {
       marginTop: newPadding + "px",
