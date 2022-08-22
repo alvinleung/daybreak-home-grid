@@ -94,6 +94,8 @@ export const createInfiniteGrid = ({
           y: -scroll,
         });
 
+      if (topPadding.value === 0) return;
+
       const attemptCreateNewPage = () => {
         const APPEND_THRESHOLD = window.innerHeight / 2;
 
@@ -164,11 +166,9 @@ export const createInfiniteGrid = ({
   topPadding.onChange((newPadding) => {
     if (newPadding === 0) {
       useNegativeContainer.set(true);
-      enableScroll();
       return;
     }
 
-    disableScroll();
     useNegativeContainer.set(false);
     stylesheet(positiveScrollContainer, {
       marginTop: newPadding + "px",
