@@ -26,6 +26,7 @@ export const createInfiniteGrid = ({
   const scrollPosition = state(0);
   const viewportHeight = state(window.innerHeight);
   const gridGap = state(24);
+  const topPadding = state(0);
   const allPages = state([] as GridPage[]);
   const canScroll = state(true);
   const activeTemplates = state<GridTemplate[]>(templates);
@@ -158,6 +159,12 @@ export const createInfiniteGrid = ({
   };
   handlePageResize();
 
+  topPadding.onChange((newPadding) => {
+    stylesheet(positiveScrollContainer, {
+      marginTop: newPadding + "px",
+    });
+  });
+
   // TODO: working on touch scroll
   const toggleTouchScroll = (useTouchScroll: boolean) => {
     if (!useTouchScroll) {
@@ -217,5 +224,6 @@ export const createInfiniteGrid = ({
     disableScroll,
     setGridTemplates: activeTemplates.set,
     setGridGap: gridGap.set,
+    setTopPadding: topPadding.set,
   };
 };
