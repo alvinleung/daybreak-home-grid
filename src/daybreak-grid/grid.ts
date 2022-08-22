@@ -87,16 +87,16 @@ export const createInfiniteGrid = ({
   const scrollMotion = createSmoothMotion({ initial: 0, smoothFactor: 0.05 });
 
   createStateRenderer(() => {
-    const handleScrollValueUpdate = (scroll: number) => {
-      if (
-        topPadding.value !== 0 &&
-        scrollPosition.value <= 0 &&
-        scrollPosition.value < scrollPosition.prevValue
-      ) {
-        scrollPosition.value = 0;
-        scrollPosition.prevValue = 0;
-      }
+    if (
+      topPadding.value !== 0 &&
+      scrollPosition.value <= 0 &&
+      scrollPosition.value < scrollPosition.prevValue
+    ) {
+      scrollPosition.value = 0;
+      scrollPosition.prevValue = 0;
+    }
 
+    const handleScrollValueUpdate = (scroll: number) => {
       // use y position scroll when not using touch mode
       !useTouchInput.value &&
         stylesheet(gridScrollContent, {
