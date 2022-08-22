@@ -25,8 +25,11 @@ export const createInfiniteGrid = ({
 }: InfiniteGridConfig) => {
   const scrollPosition = state(0);
   const viewportHeight = state(window.innerHeight);
+
   const gridGap = state(24);
   const topPadding = state(0);
+  const useNegativeContainer = state(true);
+
   const allPages = state([] as GridPage[]);
   const canScroll = state(true);
   const activeTemplates = state<GridTemplate[]>(templates);
@@ -110,10 +113,9 @@ export const createInfiniteGrid = ({
         const shouldInsertNewPageAfter =
           positiveHeight < viewportHeight.value + scroll + APPEND_THRESHOLD;
         const shouldInsertNewPageBefore = scroll + negativeHeight < 0;
-
         const selectedTemplate = getRandomArrayItem(activeTemplates.value);
 
-        if (shouldInsertNewPageBefore) {
+        if (shouldInsertNewPageBefore && useNegativeContainer.value) {
           const newPage = createPage({
             template: selectedTemplate,
             renderFunction: renderCell,
@@ -160,6 +162,12 @@ export const createInfiniteGrid = ({
   handlePageResize();
 
   topPadding.onChange((newPadding) => {
+    if (newPadding === 0) {
+      useNegativeContainer.set(true);
+      return;
+    }
+
+    useNegativeContainer.set(false);
     stylesheet(positiveScrollContainer, {
       marginTop: newPadding + "px",
     });
