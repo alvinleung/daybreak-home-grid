@@ -89,7 +89,7 @@ export const createInfiniteGrid = ({
   createStateRenderer(() => {
     const handleScrollValueUpdate = (scroll: number) => {
       if (
-        topPadding.value === 0 &&
+        topPadding.value !== 0 &&
         scrollPosition.value <= 0 &&
         scrollPosition.value < scrollPosition.prevValue
       ) {
