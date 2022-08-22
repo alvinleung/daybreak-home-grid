@@ -94,6 +94,7 @@ export const createInfiniteGrid = ({
         scrollPosition.value < scrollPosition.prevValue
       ) {
         scrollPosition.value = 0;
+        scrollPosition.prevValue = 0;
       }
 
       // use y position scroll when not using touch mode
