@@ -88,13 +88,17 @@ export const createInfiniteGrid = ({
 
   createStateRenderer(() => {
     const handleScrollValueUpdate = (scroll: number) => {
+      if (
+        topPadding.value === 0 &&
+        scrollPosition.value < scrollPosition.prevValue
+      )
+        return;
+
       // use y position scroll when not using touch mode
       !useTouchInput.value &&
         stylesheet(gridScrollContent, {
           y: -scroll,
         });
-
-      if (topPadding.value === 0) return;
 
       const attemptCreateNewPage = () => {
         const APPEND_THRESHOLD = window.innerHeight / 2;
