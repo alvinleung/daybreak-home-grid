@@ -244,5 +244,8 @@ export const createInfiniteGrid = ({
     setTopPadding: topPadding.set,
     observeScroll: scrollPosition.onChange,
     unobserveScroll: scrollPosition.unobserveChange,
+    getScrollPosition: () => {
+      return scrollPosition.value;
+    },
   };
 };
